@@ -1,8 +1,8 @@
 import { Song } from "./songs";
 
 interface Props {
-    id: string;
-    songs: Song[];
+    id?: string;
+    songs?: Song[];
     name?: string;
     description?: string;
     imgUrl?: string;
@@ -11,10 +11,10 @@ interface Props {
 }
 
 export class Playlist {
-    private _id: string;
+    private _id?: string;
     private _name?: string;
     private _imgUrl?: string;
-    private _songs: Song[];
+    private _songs?: Song[];
     private _description?: string;
     private _createdAt?: Date;
     private _updatedAt?: Date;
@@ -25,7 +25,7 @@ export class Playlist {
         return this._id;
     }
 
-    set id(value: string) {
+    set id(value: string | undefined) {
         this._id = value
     }
 
@@ -48,7 +48,7 @@ export class Playlist {
         return this._songs;
     }
 
-    set songs(value: Song[]) {
+    set songs(value: Song[] | undefined) {
         this._songs = value
     }
 

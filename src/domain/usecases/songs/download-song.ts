@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { DownloadService } from "../services/download";
-import { ISongRepository } from "../repositories/i-song-repository";
-import { Song } from "../entities/songs";
+import { DownloadService } from "../../services/download";
+import { ISongRepository } from "../../repositories/i-song-repository";
+import { Song } from "../../entities/songs";
 
 interface request {
     url: string;

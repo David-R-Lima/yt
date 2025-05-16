@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from "@nestjs/common";
-import { DownloadSongUseCase } from "src/domain/usecases/download-song";
+import { DownloadSongUseCase } from "src/domain/usecases/songs/download-song";
 
 
 @Controller("/download")

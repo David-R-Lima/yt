@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { ISongRepository } from "../repositories/i-song-repository";
-import { Song } from "../entities/songs";
+import { ISongRepository } from "../../repositories/i-song-repository";
+import { Song } from "../../entities/songs";
 
 interface request {
     page?: number;

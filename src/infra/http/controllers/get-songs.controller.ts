@@ -1,7 +1,7 @@
 import { Controller, Get, Query } from "@nestjs/common";
 import { Song } from "src/domain/entities/songs";
 
-import { GetSongsUseCase } from "src/domain/usecases/get-songs";
+import { GetSongsUseCase } from "src/domain/usecases/songs/get-songs";
 
 
 @Controller("/song")
