@@ -21,7 +21,7 @@ export class PrismaSongMapper {
             title: prismaSong.title ?? undefined,
             artist: prismaSong.artist ?? undefined,
             duration: prismaSong.duration ?? undefined,
-            imgUrl: prismaSong.title ?? undefined,
+            imgUrl: prismaSong.imgUrl ?? undefined,
             youtubeUrl: prismaSong.youtubeUrl ?? undefined,
             localUrl: prismaSong.localUrl ?? undefined,
             createdAt: prismaSong.createdAt ? new Date(prismaSong.createdAt) : undefined,
