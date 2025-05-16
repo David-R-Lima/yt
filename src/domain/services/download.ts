@@ -6,8 +6,11 @@ import { Injectable } from "@nestjs/common";
 
 const execAsync = promisify(exec);
 
-interface response {
-    url: string
+interface DownloadResponse {
+    fileUrl: string;
+    artist?: string;
+    duration?: number;
+    thumbnail?: string;
 }
 
 @Injectable()
@@ -20,20 +23,37 @@ export class DownloadService {
         }
     }
 
-    async download(url: string, name: string): Promise<response> {
+    async download(url: string, name: string): Promise<DownloadResponse> {
         const outputTemplate = path.join(this.downloadFolder, `${name}.%(ext)s`);
         const command = `yt-dlp -x --audio-format mp3 -o "${outputTemplate}" "${url}"`;
 
+        // Extract metadata
+        const metadataCmd = `yt-dlp -j "${url}"`;
+        let metadata: any = {};
+        try {
+            const { stdout } = await execAsync(metadataCmd);
+            metadata = JSON.parse(stdout);
+        } catch (error) {
+            console.error("Metadata fetch failed:", error);
+        }
+
+        // Download audio
         try {
             const { stdout, stderr } = await execAsync(command);
             console.log("Download complete:", stdout);
-            if (stderr) console.error("Errors:", stderr);
+            if (stderr) console.error("Download stderr:", stderr);
         } catch (error) {
             console.error("Download failed:", error);
         }
 
-        return { url: `/downloaded-songs/${name}.mp3` };
+        return {
+            fileUrl: `/downloaded-songs/${name}.mp3`,
+            artist: metadata.artist || metadata.uploader || null,
+            duration: metadata.duration || null,
+            thumbnail: metadata.thumbnail || null,
+        };
     }
+
 
 
     isDownloaded(name: string): boolean {

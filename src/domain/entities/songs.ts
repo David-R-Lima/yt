@@ -1,15 +1,26 @@
 interface Props {
     id?: string
-    name?: string
+    title?: string
+    artist?: string
+    duration?: number
+    imgUrl?: string
     youtubeUrl?: string
     localUrl?: string
+    createdAt?: Date
+    updatedAt?: Date
 }
 
 export class Song {
     private _id?: string
-    private _name?: string
+    private _title?: string
+    private _artist?: string
+    private _duration?: number
+    private _imgUrl?: string
     private _youtubeUrl?: string
     private _localUrl?: string
+    private _createdAt?: Date
+    private _updatedAt?: Date
+
 
     constructor() {}
 
@@ -21,12 +32,36 @@ export class Song {
         this._id = value;
     }
 
-    get name(): string | undefined {
-        return this._name;
+    get title(): string | undefined {
+        return this._title;
     }
 
-    set name(value: string | undefined) {
-        this._name = value;
+    set title(value: string | undefined) {
+        this._title = value;
+    }
+
+    get artist(): string | undefined {
+        return this._artist;
+    }
+
+    set artist(value: string | undefined) {
+        this._artist = value;
+    }
+
+    get duration(): number | undefined {
+        return this._duration;
+    }
+
+    set duration(value: number | undefined) {
+        this._duration = value;
+    }   
+
+    get imgUrl(): string | undefined {
+        return this._imgUrl;
+    }
+
+    set imgUrl(value: string | undefined) {
+        this._imgUrl = value;
     }
 
     get youtubeUrl(): string | undefined {
@@ -45,13 +80,37 @@ export class Song {
         this._localUrl = value;
     }
 
+    get createdAt(): Date | undefined {
+        return this._createdAt;
+    }
+
+    set createdAt(value: Date | undefined) {
+        this._createdAt = value;
+    }
+
+    get updatedAt(): Date | undefined {
+        return this._updatedAt;
+    }
+
+    set updatedAt(value: Date | undefined) {
+        this._updatedAt = value;
+    }
+
+
+
     create(props: Props): Song {
         const songs = new Song();
 
         songs.id = props.id;
-        songs.name = props.name ?? undefined;
+        songs.title = props.title ?? undefined;
+        songs.artist = props.artist ?? undefined;
+        songs.duration = props.duration ?? undefined;
         songs.youtubeUrl = props.youtubeUrl ?? undefined;
         songs.localUrl = props.localUrl ?? undefined;
+        songs.imgUrl = props.imgUrl ?? undefined;
+        songs.createdAt = props.createdAt ? new Date(props.createdAt) : undefined;
+        songs.updatedAt = props.updatedAt ? new Date(props.updatedAt): undefined;
+
         
         return songs;
     }

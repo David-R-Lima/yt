@@ -12,6 +12,7 @@ model Playlist {
   id            String          @unique @default(cuid())
   name          String?
   description   String?
+  imgUrl        String?
   createdAt     DateTime?       @default(now())
   updatedAt     DateTime?       @updatedAt
   PlaylistSongs PlaylistSongs[]
@@ -22,8 +23,9 @@ model Songs {
   title         String?
   artist        String?
   duration      Int?
-  youtubeUrl           String?
-  localUrl           String?
+  imgUrl        String?
+  youtubeUrl    String?
+  localUrl      String?
   createdAt     DateTime?       @default(now())
   updatedAt     DateTime?       @updatedAt
   PlaylistSongs PlaylistSongs[]

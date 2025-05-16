@@ -22,9 +22,13 @@ export class DownloadSongUseCase {
         const res = await this.downloadService.download(url, name);
 
         const song = new Song().create({
-            name: name,
+            title: name,
             youtubeUrl: url,
-            localUrl: res.url,
+            localUrl: res.fileUrl,
+            artist: res.artist,
+            duration: res.duration,
+            imgUrl: res.thumbnail,
+            createdAt: new Date(),
         })
 
         await this.songRepository.create(song);
