@@ -2,7 +2,9 @@ import { IPlaylistSongRepository } from 'src/domain/repositories/i-playlist-song
 import { PrismaService } from '../prisma.service'
 import { PlaylistSong } from 'src/domain/entities/playlist-song'
 import { PrismaPlaylistSongMapper } from '../mappers/prisma-playlist-song-mapper'
+import { Injectable } from '@nestjs/common'
 
+@Injectable()
 export class PrismaPlaylistSongRepository implements IPlaylistSongRepository {
   constructor(private readonly prismaService: PrismaService) {}
 

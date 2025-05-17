@@ -28,6 +28,13 @@ export class PrismaPlaylistRepository implements IPlaylistRepository {
   async get(id: string): Promise<Playlist> {
     const result = await this.prisma.playlist.findUnique({
       where: { id },
+      include: {
+        PlaylistSongs: {
+          include: {
+            song: true,
+          },
+        },
+      },
     })
 
     if (!result) throw new Error('playlist not found')
@@ -52,6 +59,13 @@ export class PrismaPlaylistRepository implements IPlaylistRepository {
     const result = await this.prisma.playlist.findMany({
       take: l,
       skip: (p - 1) * l,
+      include: {
+        PlaylistSongs: {
+          include: {
+            song: true,
+          },
+        },
+      },
     })
 
     return result.map(PrismaPlaylistMapper.toDomain)

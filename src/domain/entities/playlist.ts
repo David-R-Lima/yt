@@ -1,8 +1,9 @@
+import { PlaylistSong } from './playlist-song'
 import { Song } from './songs'
 
 interface Props {
   id?: string | null
-  songs?: Song[]
+  playlistSongs?: PlaylistSong[]
   name?: string | null
   description?: string | null
   imgUrl?: string | null
@@ -14,7 +15,7 @@ export class Playlist {
   private _id?: string | null
   private _name?: string | null
   private _imgUrl?: string | null
-  private _songs?: Song[]
+  private _playlistSongs?: PlaylistSong[]
   private _description?: string | null
   private _createdAt?: Date | null
   private _updatedAt?: Date | null
@@ -44,12 +45,12 @@ export class Playlist {
     this._imgUrl = value
   }
 
-  get songs() {
-    return this._songs
+  get playlistSongs() {
+    return this._playlistSongs
   }
 
-  set songs(value: Song[] | undefined) {
-    this._songs = value
+  set playlistSongs(value: PlaylistSong[] | undefined) {
+    this._playlistSongs = value
   }
 
   get description() {
@@ -82,7 +83,7 @@ export class Playlist {
     playlist.id = props.id
     playlist.name = props.name
     playlist.imgUrl = props.imgUrl
-    playlist.songs = props.songs
+    playlist.playlistSongs = props.playlistSongs
     playlist.description = props.description
     playlist.createdAt = props.createdAt
     playlist.updatedAt = props.updatedAt

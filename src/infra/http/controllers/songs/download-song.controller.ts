@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common'
 import { DownloadSongUseCase } from 'src/domain/usecases/songs/download-song'
 
-@Controller('/download')
+@Controller('/song/download')
 export class DownloadSongController {
   constructor(private readonly downloadSongUseCase: DownloadSongUseCase) {}
 

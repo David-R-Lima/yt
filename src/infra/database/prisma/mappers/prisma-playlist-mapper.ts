@@ -1,6 +1,10 @@
-import { Prisma, Playlist as PrismaPlaylist, Songs as PrismaSong } from 'generated/prisma'
+import {
+  Prisma,
+  Playlist as PrismaPlaylist,
+  PlaylistSongs as PrismaPlaylistSong,
+} from 'generated/prisma'
 import { Playlist } from 'src/domain/entities/playlist'
-import { PrismaSongMapper } from './prisma-song-mapper'
+import { PrismaPlaylistSongMapper } from './prisma-playlist-song-mapper'
 
 export class PrismaPlaylistMapper {
   static toPrisma(playlist: Playlist): Prisma.PlaylistUncheckedCreateInput {
@@ -14,12 +18,12 @@ export class PrismaPlaylistMapper {
 
   static toDomain(
     raw: PrismaPlaylist & {
-      PlaylistSongs?: PrismaSong[]
+      PlaylistSongs?: PrismaPlaylistSong[]
     }
   ): Playlist {
     return new Playlist().create({
       id: raw.id,
-      songs: raw.PlaylistSongs ? raw.PlaylistSongs.map(PrismaSongMapper.toDomain) : [],
+      playlistSongs: raw.PlaylistSongs ? raw.PlaylistSongs.map(PrismaPlaylistSongMapper.toDomain) : [],
       name: raw.name ?? null,
       description: raw.description ?? null,
       imgUrl: raw.imgUrl ?? null,
