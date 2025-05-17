@@ -1,92 +1,92 @@
-import { Song } from "./songs";
+import { Song } from './songs'
 
 interface Props {
-    id?: string;
-    songs?: Song[];
-    name?: string;
-    description?: string;
-    imgUrl?: string;
-    createdAt?: Date;
-    updatedAt?: Date;
+  id?: string | null
+  songs?: Song[]
+  name?: string | null
+  description?: string | null
+  imgUrl?: string | null
+  createdAt?: Date | null
+  updatedAt?: Date | null
 }
 
 export class Playlist {
-    private _id?: string;
-    private _name?: string;
-    private _imgUrl?: string;
-    private _songs?: Song[];
-    private _description?: string;
-    private _createdAt?: Date;
-    private _updatedAt?: Date;
+  private _id?: string | null
+  private _name?: string | null
+  private _imgUrl?: string | null
+  private _songs?: Song[]
+  private _description?: string | null
+  private _createdAt?: Date | null
+  private _updatedAt?: Date | null
 
-    constructor() {}
+  constructor() {}
 
-    get id() {
-        return this._id;
-    }
+  get id() {
+    return this._id
+  }
 
-    set id(value: string | undefined) {
-        this._id = value
-    }
+  set id(value: string | undefined | null) {
+    this._id = value
+  }
 
-    get name() {
-        return this._name;
-    }
-    set name(value: string | undefined) {
-        this._name = value
-    }
+  get name() {
+    return this._name
+  }
+  set name(value: string | undefined | null) {
+    this._name = value
+  }
 
-    get imgUrl() {
-        return this._imgUrl;
-    }
+  get imgUrl() {
+    return this._imgUrl
+  }
 
-    set imgUrl(value: string | undefined) {
-        this._imgUrl = value
-    }
+  set imgUrl(value: string | undefined | null) {
+    this._imgUrl = value
+  }
 
-    get songs() {
-        return this._songs;
-    }
+  get songs() {
+    return this._songs
+  }
 
-    set songs(value: Song[] | undefined) {
-        this._songs = value
-    }
+  set songs(value: Song[] | undefined) {
+    this._songs = value
+  }
 
-    get description() {
-        return this._description;
-    }
+  get description() {
+    return this._description
+  }
 
-    set description(value: string | undefined) {
-        this._description = value
-    }
+  set description(value: string | undefined | null) {
+    this._description = value
+  }
 
-    get createdAt() {
-        return this._createdAt;
-    }
+  get createdAt() {
+    return this._createdAt
+  }
 
-    set createdAt(value: Date | undefined) {
-        this._createdAt = value
-    }
+  set createdAt(value: Date | undefined | null) {
+    this._createdAt = value
+  }
 
-    get updatedAt() {
-        return this._updatedAt;
-    }
+  get updatedAt() {
+    return this._updatedAt
+  }
 
-    set updatedAt(value: Date | undefined) {
-        this._updatedAt = value
-    }
+  set updatedAt(value: Date | undefined | null) {
+    this._updatedAt = value
+  }
 
-    create(props: Props): Playlist {
-        const playlist = new Playlist();
+  create(props: Props): Playlist {
+    const playlist = new Playlist()
 
-        playlist.id = props.id;
-        playlist.name = props.name;
-        playlist.imgUrl = props.imgUrl;
-        playlist.songs = props.songs;
-        playlist.description = props.description;
-        playlist.createdAt = props.createdAt;
-        playlist.updatedAt = props.updatedAt;
+    playlist.id = props.id
+    playlist.name = props.name
+    playlist.imgUrl = props.imgUrl
+    playlist.songs = props.songs
+    playlist.description = props.description
+    playlist.createdAt = props.createdAt
+    playlist.updatedAt = props.updatedAt
 
-        return playlist;
-    }
+    return playlist
+  }
 }

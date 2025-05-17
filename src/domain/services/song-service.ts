@@ -15,7 +15,7 @@ interface DownloadResponse {
 }
 
 @Injectable()
-export class DownloadService {
+export class SongService {
   downloadFolder = path.resolve(__dirname, '../../../downloaded-songs')
 
   constructor() {
@@ -66,8 +66,20 @@ export class DownloadService {
     }
   }
 
-  isDownloaded(name: string): boolean {
-    const filePath = path.join(this.downloadFolder, `${name}.mp3`)
-    return fs.existsSync(filePath)
+  async delete(title: string) {
+    const filePath = path.join(this.downloadFolder, title)
+    const fileExists = this.isDownloaded(filePath)
+
+    if (!fileExists) {
+      console.log('File not found!')
+    }
+
+    fs.rm(filePath, () => {
+      console.log('Deleted!')
+    })
+  }
+
+  isDownloaded(url: string): boolean {
+    return fs.existsSync(url)
   }
 }
