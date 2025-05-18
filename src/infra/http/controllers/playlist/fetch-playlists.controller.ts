@@ -9,6 +9,7 @@ export class FetchPlaylistsController {
 
   @Get()
   async handle(@Query() query: { page?: number; limit?: number }) {
+    console.log('ASas')
     const { page, limit } = query
 
     const data = await this.fetchPlaylists.execute({

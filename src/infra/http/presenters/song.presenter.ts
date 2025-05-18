@@ -8,6 +8,7 @@ export class SongPresenter {
       artist: song.artist,
       duration: song.duration,
       youtube_url: song.youtubeUrl,
+      img_url: song.imgUrl,
       local_url: song.localUrl,
       created_at: song.createdAt,
       updated_at: song.updatedAt,
