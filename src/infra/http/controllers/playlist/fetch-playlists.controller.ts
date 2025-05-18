@@ -1,5 +1,4 @@
 import { Controller, Get, NotFoundException, Query } from '@nestjs/common'
-import { Playlist } from 'src/domain/entities/playlist'
 import { FetchPlaylists } from 'src/domain/usecases/playlist/fetch-playlists'
 import { PlaylistPresenter } from '../../presenters/playlist.presenter'
 
@@ -9,7 +8,6 @@ export class FetchPlaylistsController {
 
   @Get()
   async handle(@Query() query: { page?: number; limit?: number }) {
-    console.log('ASas')
     const { page, limit } = query
 
     const data = await this.fetchPlaylists.execute({
