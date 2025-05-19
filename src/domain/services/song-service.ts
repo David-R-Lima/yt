@@ -25,7 +25,9 @@ export class SongService {
   }
 
   sanitizeFileName(name: string): string {
-    return name.replace(/[^a-z0-9_\-()\[\] ]/gi, '').replace(/\s+/g, ' ')
+    return name
+      .replace(/[<>:"/\\|?*\x00-\x1F]/g, '') // remove illegal characters
+      .trim() // keep spaces, just trim ends
   }
 
   async download(url: string): Promise<DownloadResponse> {
@@ -42,7 +44,7 @@ export class SongService {
     }
 
     const rawTitle = metadata.title || 'downloaded_audio'
-    const sanitizedTitle = rawTitle
+    const sanitizedTitle = this.sanitizeFileName(rawTitle)
     const outputTemplate = path.join(this.downloadFolder, `${sanitizedTitle}.%(ext)s`)
     const finalFileName = `${sanitizedTitle}.mp3`
 
