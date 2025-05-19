@@ -46,7 +46,7 @@ export class SongService {
     const outputTemplate = path.join(this.downloadFolder, `${sanitizedTitle}.%(ext)s`)
     const finalFileName = `${sanitizedTitle}.mp3`
 
-    const command = `yt-dlp -x --audio-format mp3 -o "${outputTemplate}" "${url}"`
+    const command = `yt-dlp -x --audio-format mp3 --audio-quality 0 -o "${outputTemplate}" "${url}"`
 
     try {
       const { stdout, stderr } = await execAsync(command)
