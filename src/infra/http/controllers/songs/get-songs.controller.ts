@@ -13,7 +13,7 @@ export class GetSongsController {
     const { page, limit } = query
 
     const songs = await this.getSongUseCase.execute({
-      page,
+      page: page ?? 1,
       limit: limit ?? 10,
     })
 
