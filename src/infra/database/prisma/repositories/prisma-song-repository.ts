@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { ISongRepository } from "src/domain/repositories/i-song-repository";
 import { PrismaService } from "../prisma.service";
 import { Song } from "src/domain/entities/songs";
-import { IPagination } from "src/core/pagination";
+import { IPagination, IPaginationResponse } from "src/core/pagination";
 import { PrismaSongMapper } from "../mappers/prisma-song-mapper";
 
 @Injectable()
@@ -33,7 +33,10 @@ export class PrismaSongRepository implements ISongRepository {
         return PrismaSongMapper.toDomain(raw);
     }
 
-    async getAll(paganiation: IPagination): Promise<Song[]> {
+    async getAll(paganiation: IPagination): Promise<{
+        songs: Song[],
+        paginationsReponse: IPaginationResponse
+    }> {
         const { limit, page } = paganiation;
 
         let p = 1
@@ -52,7 +55,16 @@ export class PrismaSongRepository implements ISongRepository {
             skip: (p - 1) * l
         });
 
-        return raws.map(PrismaSongMapper.toDomain);
+        const count = await this.prisma.songs.count();
+
+        return {
+            songs: raws.map(PrismaSongMapper.toDomain),
+            paginationsReponse: {
+                page: p,
+                items: raws.length,
+                totalItems: count
+            }
+        }
     }
 
     async update(id: string, song: Song): Promise<void> {

@@ -13,6 +13,8 @@ import { CreatePlaylistController } from './controllers/playlist/create-playlist
 import { FetchPlaylistsController } from './controllers/playlist/fetch-playlists.controller'
 import { CreatePlayListUseCase } from 'src/domain/usecases/playlist/create-play-list'
 import { AddSongToPlaylistController } from './controllers/playlist/add-song-to-playlist.controller'
+import { FetchPlaylistController } from './controllers/playlist/fetch-playlist.controller'
+import { FetchPlaylist } from 'src/domain/usecases/playlist/fetch-playlist'
 
 @Module({
   imports: [PrismaModule],
@@ -25,6 +27,7 @@ import { AddSongToPlaylistController } from './controllers/playlist/add-song-to-
     RemoveSongToPlaylist,
     DeleteSong,
     CreatePlayListUseCase,
+    FetchPlaylist
   ],
   controllers: [
     DownloadSongController,
@@ -32,6 +35,7 @@ import { AddSongToPlaylistController } from './controllers/playlist/add-song-to-
     CreatePlaylistController,
     FetchPlaylistsController,
     AddSongToPlaylistController,
+    FetchPlaylistController
   ],
 })
 export class HttpModule {}

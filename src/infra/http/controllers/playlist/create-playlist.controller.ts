@@ -8,6 +8,7 @@ export class CreatePlaylistController {
   @Post()
   async handle(@Body() body: { name: string; description: string }): Promise<void> {
     const { name, description } = body
+
     try {
       await this.createPlayListUseCase.execute({
         name,

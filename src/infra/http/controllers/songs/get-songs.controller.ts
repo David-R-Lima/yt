@@ -14,13 +14,16 @@ export class GetSongsController {
 
     const songs = await this.getSongUseCase.execute({
       page,
-      limit,
+      limit: limit ?? 10,
     })
 
     if (!songs) {
       return new NotFoundException()
     }
 
-    return songs.map(SongPresenter.toHttp)
+    return {
+      songs: songs.songs.map(SongPresenter.toHttp),
+      meta: songs.paginationsReponse
+    }
   }
 }

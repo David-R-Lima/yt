@@ -1,4 +1,4 @@
-import { IPagination } from "src/core/pagination";
+import { IPagination, IPaginationResponse } from "src/core/pagination";
 import { Playlist } from "../entities/playlist";
 
 export abstract class IPlaylistRepository {
@@ -6,5 +6,8 @@ export abstract class IPlaylistRepository {
     abstract update(id: string, playlist: Playlist): Promise<void>;
     abstract delete(id: string): Promise<void>;
     abstract get(id: string): Promise<Playlist>;
-    abstract getAll(paganiation: IPagination): Promise<Playlist[]>;
+    abstract getAll(paganiation: IPagination): Promise<{
+        playlists: Playlist[],
+        paginationsReponse: IPaginationResponse
+    }>;
 }

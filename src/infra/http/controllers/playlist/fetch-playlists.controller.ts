@@ -21,6 +21,9 @@ export class FetchPlaylistsController {
       return new NotFoundException()
     }
 
-    return data.map(PlaylistPresenter.toHttp)
+    return {
+      playlists: data.playlists.map(PlaylistPresenter.toHttp),
+      meta: data.paginationsReponse
+    }
   }
 }

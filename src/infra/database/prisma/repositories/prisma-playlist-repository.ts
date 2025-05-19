@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { IPlaylistRepository } from 'src/domain/repositories/i-playlist-repository'
 import { PrismaService } from '../prisma.service'
 import { Playlist } from 'src/domain/entities/playlist'
-import { IPagination } from 'src/core/pagination'
+import { IPagination, IPaginationResponse } from 'src/core/pagination'
 import { PrismaPlaylistMapper } from '../mappers/prisma-playlist-mapper'
 
 @Injectable()
@@ -42,7 +42,10 @@ export class PrismaPlaylistRepository implements IPlaylistRepository {
     return PrismaPlaylistMapper.toDomain(result)
   }
 
-  async getAll(paganiation: IPagination): Promise<Playlist[]> {
+  async getAll(paganiation: IPagination): Promise<{
+    playlists: Playlist[],
+    paginationsReponse: IPaginationResponse
+  }> {
     const { limit, page } = paganiation
 
     let p = 1
@@ -59,16 +62,18 @@ export class PrismaPlaylistRepository implements IPlaylistRepository {
     const result = await this.prisma.playlist.findMany({
       take: l,
       skip: (p - 1) * l,
-      include: {
-        PlaylistSongs: {
-          include: {
-            song: true,
-          },
-        },
-      },
     })
 
-    return result.map(PrismaPlaylistMapper.toDomain)
+    const count = await this.prisma.playlist.count()
+
+    return {
+      playlists: result.map(PrismaPlaylistMapper.toDomain),
+      paginationsReponse: {
+        page: p,
+        items: result.length,
+        totalItems: count,
+      }
+    }
   }
 
   async update(id: string, playlist: Playlist): Promise<void> {
