@@ -4,8 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -21,6 +21,7 @@ model Playlist {
 
 model Songs {
   id            String          @id @default(cuid())
+  liked         Boolean?
   title         String?
   artist        String?
   duration      Int?
@@ -30,6 +31,7 @@ model Songs {
   createdAt     DateTime?       @default(now())
   updatedAt     DateTime?       @updatedAt
   PlaylistSongs PlaylistSongs[]
+  History       History[]
 }
 
 model PlaylistSongs {
@@ -39,4 +41,14 @@ model PlaylistSongs {
   song       Songs    @relation(fields: [songId], references: [id])
 
   @@id([playlistId, songId])
+}
+
+model History {
+  id     String @id
+  songId String
+
+  createAt  DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  song Songs @relation(fields: [songId], references: [id])
 }
