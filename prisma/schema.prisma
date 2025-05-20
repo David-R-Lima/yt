@@ -10,7 +10,7 @@ datasource db {
 }
 
 model Playlist {
-  id            String          @unique @default(cuid())
+  id            String          @id @default(cuid())
   name          String?
   description   String?
   imgUrl        String?
@@ -20,7 +20,7 @@ model Playlist {
 }
 
 model Songs {
-  id            String          @unique @default(cuid())
+  id            String          @id @default(cuid())
   title         String?
   artist        String?
   duration      Int?
@@ -38,5 +38,5 @@ model PlaylistSongs {
   playlist   Playlist @relation(fields: [playlistId], references: [id])
   song       Songs    @relation(fields: [songId], references: [id])
 
-  @@unique([playlistId, songId])
+  @@id([playlistId, songId])
 }
