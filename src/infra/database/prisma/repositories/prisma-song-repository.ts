@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { ISongRepository } from "src/domain/repositories/i-song-repository";
+import { GetAllSongsFilters, ISongRepository } from "src/domain/repositories/i-song-repository";
 import { PrismaService } from "../prisma.service";
 import { Song } from "src/domain/entities/songs";
 import { IPagination, IPaginationResponse } from "src/core/pagination";
@@ -33,7 +33,7 @@ export class PrismaSongRepository implements ISongRepository {
         return PrismaSongMapper.toDomain(raw);
     }
 
-    async getAll(paganiation: IPagination): Promise<{
+    async getAll(paganiation: IPagination, filters?: GetAllSongsFilters): Promise<{
         songs: Song[],
         paginationsReponse: IPaginationResponse
     }> {
@@ -52,7 +52,10 @@ export class PrismaSongRepository implements ISongRepository {
 
         const raws = await this.prisma.songs.findMany({
             take: limit,
-            skip: (p - 1) * l
+            skip: (p - 1) * l,
+            orderBy: {
+                createdAt: filters?.orderBy ?? "asc"
+            }
         });
 
         const count = await this.prisma.songs.count();

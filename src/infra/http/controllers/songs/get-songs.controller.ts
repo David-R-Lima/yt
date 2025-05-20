@@ -5,10 +5,15 @@ import { GetSongsUseCase } from 'src/domain/usecases/songs/get-songs'
 import { SongPresenter } from '../../presenters/song.presenter'
 import { z } from 'zod';
 import { ZodValidationPipe } from '../../pipes/zod-validation.pipe';
+import { OrderBy } from 'src/core/order-by';
+import { Liked } from 'src/core/liked';
 
 const requestSchema =  z.object({
   page: z.coerce.number().optional(),
   limit: z.coerce.number().optional(),
+  liked: z.nativeEnum(Liked).optional(),
+  order_by: z.nativeEnum(OrderBy).optional().default(OrderBy.ASC),
+  text: z.string().optional(),
 });
   
 type RequestSchema = z.infer<typeof requestSchema>;
@@ -22,11 +27,16 @@ export class GetSongsController {
 
   @Get()
   async execute(@Query(validationPipe) query: RequestSchema) {
-    const { page, limit } = query
+    const { page, limit, order_by, liked, text } = query
 
     const songs = await this.getSongUseCase.execute({
       page: page ?? 1,
       limit: limit ?? 10,
+      filters: {
+        text, 
+        orderBy: order_by ?? OrderBy.ASC,
+        liked
+      }
     })
 
     if (!songs) {
