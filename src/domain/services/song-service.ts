@@ -9,6 +9,7 @@ const execAsync = promisify(exec)
 interface DownloadResponse {
   fileUrl: string
   fileName: string
+  title: string
   artist?: string
   duration?: number
   thumbnail?: string
@@ -30,7 +31,7 @@ export class SongService {
       .trim() // keep spaces, just trim ends
   }
 
-  async download(url: string): Promise<DownloadResponse> {
+  async download(url: string): Promise<DownloadResponse | Error> {
     const metadataCmd = `yt-dlp -j "${url}"`
 
     let metadata: any = {}
@@ -45,8 +46,13 @@ export class SongService {
 
     const rawTitle = metadata.title || 'downloaded_audio'
     const sanitizedTitle = this.sanitizeFileName(rawTitle)
-    const outputTemplate = path.join(this.downloadFolder, `${sanitizedTitle}.%(ext)s`)
     const finalFileName = `${sanitizedTitle}.mp3`
+    const outputPath = path.join(this.downloadFolder, finalFileName)
+    const outputTemplate = path.join(this.downloadFolder, `${sanitizedTitle}.%(ext)s`)
+
+    if (this.isDownloaded(outputPath)) {
+      return new Error(`File already exists at ${outputPath}`)
+    }
 
     const command = `yt-dlp -x --audio-format mp3 --audio-quality 0 -o "${outputTemplate}" "${url}"`
 
@@ -62,6 +68,7 @@ export class SongService {
     return {
       fileUrl: `/downloaded-songs/${finalFileName}`,
       fileName: finalFileName,
+      title: sanitizedTitle,
       artist: metadata.artist || metadata.uploader || null,
       duration: metadata.duration || null,
       thumbnail: metadata.thumbnail || null,

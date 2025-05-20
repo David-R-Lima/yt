@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common'
 import { DownloadSongController } from './controllers/songs/download-song.controller'
 import { DownloadSongUseCase } from 'src/domain/usecases/songs/download-song'
-import { PrismaModule } from '../database/prisma/prisma.module'
 import { SongService } from 'src/domain/services/song-service'
 import { GetSongsUseCase } from 'src/domain/usecases/songs/get-songs'
 import { GetSongsController } from './controllers/songs/get-songs.controller'
@@ -15,9 +14,16 @@ import { CreatePlayListUseCase } from 'src/domain/usecases/playlist/create-play-
 import { AddSongToPlaylistController } from './controllers/playlist/add-song-to-playlist.controller'
 import { FetchPlaylistController } from './controllers/playlist/fetch-playlist.controller'
 import { FetchPlaylist } from 'src/domain/usecases/playlist/fetch-playlist'
+import { DatabaseModule } from '../database/database.module'
+import { AddSongToHistoryController } from './controllers/history/add-song-to-history.controller'
+import { ClearHistoryController } from './controllers/history/clear-history.controller'
+import { GetHistoryController } from './controllers/history/get-history.controller'
+import { AddSongToHistory } from 'src/domain/usecases/history/add-song'
+import { ClearHistory } from 'src/domain/usecases/history/clear-history'
+import { GetHistory } from 'src/domain/usecases/history/get-history'
 
 @Module({
-  imports: [PrismaModule],
+  imports: [DatabaseModule],
   providers: [
     SongService,
     DownloadSongUseCase,
@@ -27,7 +33,10 @@ import { FetchPlaylist } from 'src/domain/usecases/playlist/fetch-playlist'
     RemoveSongToPlaylist,
     DeleteSong,
     CreatePlayListUseCase,
-    FetchPlaylist
+    FetchPlaylist,
+    AddSongToHistory,
+    ClearHistory,
+    GetHistory
   ],
   controllers: [
     DownloadSongController,
@@ -35,7 +44,10 @@ import { FetchPlaylist } from 'src/domain/usecases/playlist/fetch-playlist'
     CreatePlaylistController,
     FetchPlaylistsController,
     AddSongToPlaylistController,
-    FetchPlaylistController
+    FetchPlaylistController,
+    AddSongToHistoryController,
+    ClearHistoryController,
+    GetHistoryController
   ],
 })
 export class HttpModule {}

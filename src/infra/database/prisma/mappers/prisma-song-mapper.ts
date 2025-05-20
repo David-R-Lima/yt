@@ -10,6 +10,7 @@ export class PrismaSongMapper {
       imgUrl: song.imgUrl,
       youtubeUrl: song.youtubeUrl,
       localUrl: song.localUrl,
+      liked: song.liked,
       createdAt: song.createdAt,
       updatedAt: song.updatedAt,
     }
@@ -24,6 +25,7 @@ export class PrismaSongMapper {
       imgUrl: prismaSong.imgUrl ?? null,
       youtubeUrl: prismaSong.youtubeUrl ?? null,
       localUrl: prismaSong.localUrl ?? null,
+      liked: prismaSong.liked ?? false,
       createdAt: prismaSong.createdAt ? new Date(prismaSong.createdAt) : null,
       updatedAt: prismaSong.updatedAt ? new Date(prismaSong.updatedAt) : null,
     })

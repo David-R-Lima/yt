@@ -6,6 +6,8 @@ import { ISongRepository } from "src/domain/repositories/i-song-repository";
 import { PrismaSongRepository } from "./repositories/prisma-song-repository";
 import { PrismaPlaylistSongRepository } from "./repositories/prisma-playlist-song-repository";
 import { IPlaylistSongRepository } from "src/domain/repositories/i-playlist-song-repository";
+import { IHistoryRepository } from "src/domain/repositories/i-history-repository";
+import { PrismaHistoryRepository } from "./repositories/prisma-history-repository";
 
 @Module({   
     providers: [
@@ -21,6 +23,10 @@ import { IPlaylistSongRepository } from "src/domain/repositories/i-playlist-song
         {
             provide: IPlaylistSongRepository,
             useClass: PrismaPlaylistSongRepository
+        },
+        {
+            provide: IHistoryRepository,
+            useClass: PrismaHistoryRepository
         }
     ],
     exports: [
@@ -36,6 +42,10 @@ import { IPlaylistSongRepository } from "src/domain/repositories/i-playlist-song
         {
             provide: IPlaylistSongRepository,
             useClass: PrismaPlaylistSongRepository
+        },
+        {
+            provide: IHistoryRepository,
+            useClass: PrismaHistoryRepository
         }
     ] 
 })

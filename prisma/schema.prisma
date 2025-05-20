@@ -44,7 +44,7 @@ model PlaylistSongs {
 }
 
 model History {
-  id     String @id
+  id     String @id @default(cuid())
   songId String
 
   createAt  DateTime? @default(now())

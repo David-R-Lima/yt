@@ -14,13 +14,18 @@ export class DownloadSongUseCase {
     private readonly songRepository: ISongRepository
   ) {}
 
-  async execute(req: request): Promise<void> {
+  async execute(req: request): Promise<Song | Error> {
     const { url } = req
 
     const res = await this.songService.download(url)
 
+
+    if(res instanceof Error) {
+      return res
+    }
+
     const song = new Song().create({
-      title: res.fileName,
+      title: res.title,
       youtubeUrl: url,
       localUrl: res.fileUrl,
       artist: res.artist,
@@ -29,6 +34,8 @@ export class DownloadSongUseCase {
       createdAt: new Date(),
     })
 
-    await this.songRepository.create(song)
+    const newSong = await this.songRepository.create(song)
+
+    return newSong
   }
 }

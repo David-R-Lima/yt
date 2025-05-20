@@ -6,6 +6,7 @@ interface Props {
   imgUrl?: string | null
   youtubeUrl?: string | null
   localUrl?: string | null
+  liked?: boolean | null
   createdAt?: Date | null
   updatedAt?: Date | null
 }
@@ -18,6 +19,7 @@ export class Song {
   private _imgUrl?: string | null
   private _youtubeUrl?: string | null
   private _localUrl?: string | null
+  private _liked?: boolean | null
   private _createdAt?: Date | null
   private _updatedAt?: Date | null
 
@@ -79,6 +81,14 @@ export class Song {
     this._localUrl = value
   }
 
+  get liked(): boolean | undefined | null {
+    return this._liked
+  }
+
+  set liked(value: boolean | undefined | null) {
+    this._liked = value
+  }
+
   get createdAt(): Date | undefined | null {
     return this._createdAt
   }
@@ -105,6 +115,7 @@ export class Song {
     songs.youtubeUrl = props.youtubeUrl ?? undefined
     songs.localUrl = props.localUrl ?? undefined
     songs.imgUrl = props.imgUrl ?? undefined
+    songs.liked = props.liked ?? undefined
     songs.createdAt = props.createdAt ? new Date(props.createdAt) : undefined
     songs.updatedAt = props.updatedAt ? new Date(props.updatedAt) : undefined
 

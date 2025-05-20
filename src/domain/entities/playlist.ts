@@ -1,5 +1,4 @@
 import { PlaylistSong } from './playlist-song'
-import { Song } from './songs'
 
 interface Props {
   id?: string | null
