@@ -4,6 +4,7 @@ import { PrismaService } from "../prisma.service";
 import { Song } from "src/domain/entities/songs";
 import { IPagination, IPaginationResponse } from "src/core/pagination";
 import { PrismaSongMapper } from "../mappers/prisma-song-mapper";
+import { Liked } from "src/core/liked";
 
 @Injectable()
 export class PrismaSongRepository implements ISongRepository {
@@ -37,6 +38,7 @@ export class PrismaSongRepository implements ISongRepository {
         songs: Song[],
         paginationsReponse: IPaginationResponse
     }> {
+        console.log(filters)
         const { limit, page } = paganiation;
 
         let p = 1
@@ -53,6 +55,29 @@ export class PrismaSongRepository implements ISongRepository {
         const raws = await this.prisma.songs.findMany({
             take: limit,
             skip: (p - 1) * l,
+            where: {
+                ...(filters?.text && {
+                    OR: [
+                        {
+                            title: {
+                                contains: filters.text,
+                                mode: "insensitive"
+                            }
+                        },
+                        {
+                            artist: {
+                                contains: filters.text,
+                                mode: "insensitive"
+                            }
+                        },
+                    ]
+                }),
+                ...(filters?.liked && (
+                    {
+                        liked: false
+                    }
+                ))
+            },
             orderBy: {
                 createdAt: filters?.orderBy ?? "asc"
             }
