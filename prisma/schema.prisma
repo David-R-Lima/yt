@@ -21,7 +21,7 @@ model Playlist {
 
 model Songs {
   id            String          @id @default(cuid())
-  liked         Boolean?
+  liked         Boolean? @default(false)
   title         String?
   artist        String?
   duration      Int?

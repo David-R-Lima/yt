@@ -72,11 +72,11 @@ export class PrismaSongRepository implements ISongRepository {
                         },
                     ]
                 }),
-                ...(filters?.liked && (
-                    {
-                        liked: false
-                    }
-                ))
+                // ...(filters?.liked && (
+                //     {
+                //         liked: false
+                //     }
+                // ))
             },
             orderBy: {
                 createdAt: filters?.orderBy ?? "asc"
