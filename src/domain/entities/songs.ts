@@ -1,3 +1,5 @@
+import { createId } from "@paralleldrive/cuid2"
+
 interface Props {
   id?: string | null
   title?: string | null
@@ -108,7 +110,7 @@ export class Song {
   create(props: Props): Song {
     const songs = new Song()
 
-    songs.id = props.id
+    songs.id = props.id ?? createId()
     songs.title = props.title ?? undefined
     songs.artist = props.artist ?? undefined
     songs.duration = props.duration ?? undefined

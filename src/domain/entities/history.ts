@@ -1,7 +1,5 @@
+import { createId } from "@paralleldrive/cuid2"
 import { Song } from "./songs"
-
-
-
 interface Props {
     id: string
     songId: string
@@ -63,7 +61,7 @@ export class History {
     create(props: Partial<Props>): History {
         const history = new History()
 
-        history.id = props.id ?? ""
+        history.id = props.id ?? createId()
         history.songId = props.songId ?? ""
         history.createdAt = props.createdAt ? new Date(props.createdAt) : undefined
         history.updatedAt = props.updatedAt ? new Date(props.updatedAt) : undefined

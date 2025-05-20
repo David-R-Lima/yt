@@ -18,6 +18,16 @@ export class AddSongToHistory {
             return false;
         }
 
+        const recentHistory = await this.iHistoryRepository.getFirst()
+
+        if(recentHistory && recentHistory.songId === songId) {
+            recentHistory.updatedAt = new Date();
+
+            const result = await this.iHistoryRepository.update(recentHistory)
+
+            return result;
+        }
+
         const history = new History().create({
             songId: songId,
             createdAt: new Date(),

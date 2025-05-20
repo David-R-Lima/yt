@@ -11,4 +11,6 @@ export abstract class IHistoryRepository {
     }>
     abstract delete(): Promise<void>
     abstract deleteOne(id: string): Promise<void>
+    abstract getFirst(): Promise<History | undefined>
+    abstract update(history: History): Promise<History>
 }

@@ -1,3 +1,4 @@
+import { createId } from '@paralleldrive/cuid2'
 import { PlaylistSong } from './playlist-song'
 
 interface Props {
@@ -79,7 +80,7 @@ export class Playlist {
   create(props: Props): Playlist {
     const playlist = new Playlist()
 
-    playlist.id = props.id
+    playlist.id = props.id ?? createId()
     playlist.name = props.name
     playlist.imgUrl = props.imgUrl
     playlist.playlistSongs = props.playlistSongs

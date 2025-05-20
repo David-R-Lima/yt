@@ -48,6 +48,9 @@ export class PrismaHistoryRepository implements IHistoryRepository {
         const result = await this.prisma.history.findMany({
             take: l,
             skip: (p - 1) * l,
+            include: {
+                song: true,
+            }
         })
 
         const count = await this.prisma.history.count()
@@ -60,5 +63,28 @@ export class PrismaHistoryRepository implements IHistoryRepository {
                 totalItems: count,
             }
         }
+    }
+
+    async getFirst(): Promise<History | undefined> {
+        const result = await this.prisma.history.findFirst({
+            take: 1,
+        })
+        
+        if(!result) {
+            return undefined
+        }
+            
+        return PrismaHistoryMapper.toDomain(result)
+    }
+
+    async update(history: History): Promise<History> {
+        const data = PrismaHistoryMapper.toPrisma(history)
+
+        const result = await this.prisma.history.update({
+            where: { id: history.id },
+            data,
+        })
+
+        return PrismaHistoryMapper.toDomain(result)
     }
 }
