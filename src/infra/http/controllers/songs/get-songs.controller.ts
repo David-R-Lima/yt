@@ -14,6 +14,8 @@ const requestSchema =  z.object({
   liked: z.nativeEnum(Liked).optional(),
   order_by: z.nativeEnum(OrderBy).optional().default(OrderBy.ASC),
   text: z.string().optional(),
+  duration_gte: z.coerce.number().optional(),
+  duration_lte: z.coerce.number().optional(),
 });
   
 type RequestSchema = z.infer<typeof requestSchema>;
@@ -35,7 +37,11 @@ export class GetSongsController {
       filters: {
         text, 
         orderBy: order_by ?? OrderBy.ASC,
-        liked
+        liked,
+        duration: {
+          gte: query.duration_gte ?? undefined,
+          lte: query.duration_lte ?? undefined,
+        }
       }
     })
 

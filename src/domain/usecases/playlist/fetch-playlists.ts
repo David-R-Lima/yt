@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { IPagination, IPaginationResponse } from 'src/core/pagination'
 import { Playlist } from 'src/domain/entities/playlist'
-import { IPlaylistRepository } from 'src/domain/repositories/i-playlist-repository'
+import { GetAllPlaylistsFilters, IPlaylistRepository } from 'src/domain/repositories/i-playlist-repository'
 
 interface request {
   pagination: IPagination
+  filters?: GetAllPlaylistsFilters
 }
 
 @Injectable()
@@ -15,7 +16,7 @@ export class FetchPlaylists {
     playlists: Playlist[],
     paginationsReponse: IPaginationResponse
   }> {
-    const res = await this.iPlaylistRespository.getAll(req.pagination)
+    const res = await this.iPlaylistRespository.getAll(req.pagination, req.filters)
 
     return res
   }

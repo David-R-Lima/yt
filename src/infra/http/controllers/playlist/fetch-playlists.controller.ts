@@ -3,10 +3,15 @@ import { FetchPlaylists } from 'src/domain/usecases/playlist/fetch-playlists'
 import { PlaylistPresenter } from '../../presenters/playlist.presenter'
 import { z } from 'zod';
 import { ZodValidationPipe } from '../../pipes/zod-validation.pipe';
+import { OrderBy } from 'src/core/order-by';
+import { Pinned } from 'src/core/pinned';
 
 const requestSchema =  z.object({
   page: z.coerce.number().optional(),
   limit: z.coerce.number().optional(),
+  pinned: z.nativeEnum(Pinned).optional(),
+  order_by: z.nativeEnum(OrderBy).optional().default(OrderBy.ASC),
+  text: z.string().optional(),
 });
   
 type RequestSchema = z.infer<typeof requestSchema>;
@@ -26,6 +31,11 @@ export class FetchPlaylistsController {
         limit,
         page,
       },
+      filters: {
+        text: query.text ?? undefined,
+        pinned: query.pinned ?? undefined,
+        orderBy: query.order_by ?? OrderBy.ASC
+      }
     })
 
     if (!data) {

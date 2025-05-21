@@ -5,6 +5,7 @@ import { Song } from "src/domain/entities/songs";
 import { IPagination, IPaginationResponse } from "src/core/pagination";
 import { PrismaSongMapper } from "../mappers/prisma-song-mapper";
 import { Liked } from "src/core/liked";
+import { Prisma } from "generated/prisma";
 
 @Injectable()
 export class PrismaSongRepository implements ISongRepository {
@@ -38,7 +39,6 @@ export class PrismaSongRepository implements ISongRepository {
         songs: Song[],
         paginationsReponse: IPaginationResponse
     }> {
-        console.log(filters)
         const { limit, page } = paganiation;
 
         let p = 1
@@ -52,38 +52,53 @@ export class PrismaSongRepository implements ISongRepository {
             p = page
         }
 
+        const where: Prisma.SongsWhereInput = {
+            ...(filters?.text && {
+                OR: [
+                    {
+                        title: {
+                            contains: filters.text,
+                            mode: "insensitive"
+                        }
+                    },
+                    {
+                        artist: {
+                            contains: filters.text,
+                            mode: "insensitive"
+                        }
+                    },
+                ]
+            }),
+            ...(filters?.duration && (
+                {
+                    duration: {
+                        ...(filters.duration?.gte !== undefined && { gte: filters.duration.gte }),
+                        ...(filters.duration?.lte !== undefined && { lte: filters.duration.lte }),
+                    }
+                }
+            )),
+            ...(filters?.liked && (
+                {
+                    liked: filters.liked === Liked.TRUE ? true : false
+                }
+            ))
+        }
+
+        const orderBy: Prisma.SongsOrderByWithAggregationInput = {
+            createdAt: filters?.orderBy ?? "asc"
+        }
+
         const raws = await this.prisma.songs.findMany({
             take: limit,
             skip: (p - 1) * l,
-            where: {
-                ...(filters?.text && {
-                    OR: [
-                        {
-                            title: {
-                                contains: filters.text,
-                                mode: "insensitive"
-                            }
-                        },
-                        {
-                            artist: {
-                                contains: filters.text,
-                                mode: "insensitive"
-                            }
-                        },
-                    ]
-                }),
-                // ...(filters?.liked && (
-                //     {
-                //         liked: false
-                //     }
-                // ))
-            },
-            orderBy: {
-                createdAt: filters?.orderBy ?? "asc"
-            }
+            where,
+            orderBy
         });
 
-        const count = await this.prisma.songs.count();
+        const count = await this.prisma.songs.count({
+            where,
+            orderBy
+        });
 
         return {
             songs: raws.map(PrismaSongMapper.toDomain),

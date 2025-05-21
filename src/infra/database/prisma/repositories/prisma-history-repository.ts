@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma.service";
-import { IHistoryRepository } from "src/domain/repositories/i-history-repository";
+import { GetAllHistoryFilters, IHistoryRepository } from "src/domain/repositories/i-history-repository";
 import { History } from "src/domain/entities/history";
 import { IPagination, IPaginationResponse } from "src/core/pagination";
 import { PrismaHistoryMapper } from "../mappers/prisma-history-mapper";
+import { Prisma } from "generated/prisma";
 
 @Injectable()
 export class PrismaHistoryRepository implements IHistoryRepository {
@@ -31,7 +32,7 @@ export class PrismaHistoryRepository implements IHistoryRepository {
         })
     }
 
-    async getAll(pagination: IPagination): Promise<{ history: History[]; paginationsReponse: IPaginationResponse; }> {
+    async getAll(pagination: IPagination, filters?: GetAllHistoryFilters): Promise<{ history: History[]; paginationsReponse: IPaginationResponse; }> {
         const { limit, page } = pagination
 
         let p = 1
@@ -44,16 +45,48 @@ export class PrismaHistoryRepository implements IHistoryRepository {
         if (page) {
             p = page
         }
+
+        const where: Prisma.HistoryWhereInput = {
+            ...(filters?.text && {
+                OR: [
+                    {
+                        song: {
+                            title: {
+                                contains: filters.text,
+                                mode: "insensitive"
+                            }
+                        }
+                    },
+                    {
+                        song: {
+                            artist: {
+                                contains: filters.text,
+                                mode: "insensitive"
+                            }
+                        }
+                    }
+                ]
+            })
+        }
+
+        const orderBy: Prisma.HistoryOrderByWithAggregationInput = {
+            createdAt: filters?.orderBy ?? "asc"
+        }
     
         const result = await this.prisma.history.findMany({
             take: l,
             skip: (p - 1) * l,
             include: {
                 song: true,
-            }
+            },
+            where,
+            orderBy
         })
 
-        const count = await this.prisma.history.count()
+        const count = await this.prisma.history.count({
+            where,
+            orderBy
+        })
 
         return {
             history: result.map(PrismaHistoryMapper.toDomain),

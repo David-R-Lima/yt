@@ -7,6 +7,10 @@ export interface GetAllSongsFilters {
     text?: string
     orderBy?: OrderBy
     liked?: Liked
+    duration?: {
+        gte?: number
+        lte?: number
+    }
 }
 
 export abstract class ISongRepository {

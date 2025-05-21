@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { IPlaylistRepository } from 'src/domain/repositories/i-playlist-repository'
+import { GetAllPlaylistsFilters, IPlaylistRepository } from 'src/domain/repositories/i-playlist-repository'
 import { PrismaService } from '../prisma.service'
 import { Playlist } from 'src/domain/entities/playlist'
 import { IPagination, IPaginationResponse } from 'src/core/pagination'
 import { PrismaPlaylistMapper } from '../mappers/prisma-playlist-mapper'
+import { Pinned } from 'src/core/pinned'
+import { Prisma } from 'generated/prisma'
 
 @Injectable()
 export class PrismaPlaylistRepository implements IPlaylistRepository {
@@ -42,7 +44,7 @@ export class PrismaPlaylistRepository implements IPlaylistRepository {
     return PrismaPlaylistMapper.toDomain(result)
   }
 
-  async getAll(paganiation: IPagination): Promise<{
+  async getAll(paganiation: IPagination, filters?: GetAllPlaylistsFilters): Promise<{
     playlists: Playlist[],
     paginationsReponse: IPaginationResponse
   }> {
@@ -59,12 +61,45 @@ export class PrismaPlaylistRepository implements IPlaylistRepository {
       p = page
     }
 
+        const where: Prisma.PlaylistWhereInput = {
+          ...(filters?.text && {
+            OR: [
+                {
+                    name: {
+                        contains: filters.text,
+                        mode: "insensitive"
+                    }
+                },
+                {
+                    description: {
+                        contains: filters.text,
+                        mode: "insensitive"
+                    }
+                },
+            ]
+          }),
+          ...(filters?.pinned && (
+              {
+                  pinned: filters.pinned === Pinned.TRUE ? true : false
+              }
+          ))
+        }
+
+        const orderBy: Prisma.PlaylistOrderByWithAggregationInput = {
+            createdAt: filters?.orderBy ?? "asc"
+        }
+
     const result = await this.prisma.playlist.findMany({
       take: l,
       skip: (p - 1) * l,
+      where,
+      orderBy
     })
 
-    const count = await this.prisma.playlist.count()
+    const count = await this.prisma.playlist.count({
+      where,
+      orderBy
+    })
 
     return {
       playlists: result.map(PrismaPlaylistMapper.toDomain),
