@@ -7,6 +7,7 @@ export class SongPresenter {
       title: song.title,
       artist: song.artist,
       duration: song.duration,
+      liked: song.liked,
       youtube_url: song.youtubeUrl,
       img_url: song.imgUrl,
       local_url: song.localUrl,
