@@ -21,6 +21,8 @@ import { GetHistoryController } from './controllers/history/get-history.controll
 import { AddSongToHistory } from 'src/domain/usecases/history/add-song'
 import { ClearHistory } from 'src/domain/usecases/history/clear-history'
 import { GetHistory } from 'src/domain/usecases/history/get-history'
+import { GetNextSongs } from 'src/domain/usecases/songs/get-next-songs'
+import { GetNextSongsController } from './controllers/songs/get-next-songs.controller'
 
 @Module({
   imports: [DatabaseModule],
@@ -36,7 +38,8 @@ import { GetHistory } from 'src/domain/usecases/history/get-history'
     FetchPlaylist,
     AddSongToHistory,
     ClearHistory,
-    GetHistory
+    GetHistory,
+    GetNextSongs
   ],
   controllers: [
     DownloadSongController,
@@ -47,7 +50,8 @@ import { GetHistory } from 'src/domain/usecases/history/get-history'
     FetchPlaylistController,
     AddSongToHistoryController,
     ClearHistoryController,
-    GetHistoryController
+    GetHistoryController,
+    GetNextSongsController
   ],
 })
 export class HttpModule {}

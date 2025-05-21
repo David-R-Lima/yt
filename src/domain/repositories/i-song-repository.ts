@@ -2,6 +2,7 @@ import { IPagination, IPaginationResponse } from "src/core/pagination";
 import { Song } from "../entities/songs";
 import { OrderBy } from "src/core/order-by";
 import { Liked } from "src/core/liked";
+import { Random } from "src/core/random";
 
 export interface GetAllSongsFilters {
     text?: string
@@ -13,6 +14,12 @@ export interface GetAllSongsFilters {
     }
 }
 
+export interface GetSongsOptions {
+    excludedIds?: string[];
+    random?: Random;
+    startId?: string
+}
+
 export abstract class ISongRepository {
     abstract create(song: Song): Promise<Song>;
     abstract update(id: string, song: Song): Promise<void>;
@@ -22,4 +29,12 @@ export abstract class ISongRepository {
         songs: Song[],
         paginationsReponse: IPaginationResponse
     }>;
+    abstract getFromPlaylist({
+        playlistId,
+        getSongOptions
+    }: {
+        playlistId: string, getSongOptions: GetSongsOptions
+    }): Promise<Song[]>
+    abstract getFromLiked({ getSongOptions }: {getSongOptions: GetSongsOptions}): Promise<Song[]>
+    abstract getFromAll({ getSongOptions }: {getSongOptions: GetSongsOptions}): Promise<Song[]>
 }

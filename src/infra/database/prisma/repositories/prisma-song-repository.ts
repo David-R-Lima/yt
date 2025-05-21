@@ -1,11 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { GetAllSongsFilters, ISongRepository } from "src/domain/repositories/i-song-repository";
+import { GetAllSongsFilters, GetSongsOptions, ISongRepository } from "src/domain/repositories/i-song-repository";
 import { PrismaService } from "../prisma.service";
 import { Song } from "src/domain/entities/songs";
 import { IPagination, IPaginationResponse } from "src/core/pagination";
 import { PrismaSongMapper } from "../mappers/prisma-song-mapper";
 import { Liked } from "src/core/liked";
-import { Prisma } from "generated/prisma";
+import { Prisma, Songs as PrismaSongs } from "generated/prisma";
+import { Random } from "src/core/random";
 
 @Injectable()
 export class PrismaSongRepository implements ISongRepository {
@@ -117,5 +118,143 @@ export class PrismaSongRepository implements ISongRepository {
             where: { id },
             data,
         });
+    }
+
+    async getFromAll({ getSongOptions }: { getSongOptions: GetSongsOptions; }): Promise<Song[]> {
+        const { startId, excludedIds = [], random = false } = getSongOptions;
+
+        const baseConditions: Prisma.Sql[] = [];
+
+        const fetchSongs = async (extraCondition?: Prisma.Sql) => {
+            const conditions = [...baseConditions];
+
+            if (extraCondition) {
+                conditions.push(extraCondition);
+            }
+
+            if (excludedIds.length > 0) {
+                conditions.push(Prisma.sql`id NOT IN (${Prisma.join(excludedIds)})`);
+            }
+
+            const whereClause = conditions.length
+            ? Prisma.sql`WHERE ${Prisma.join(conditions, ` AND `)}`
+            : Prisma.sql``;
+
+            const orderBy = random === Random.TRUE ? Prisma.sql`ORDER BY RANDOM()` : Prisma.sql`ORDER BY id ASC`;
+            
+            const sql = Prisma.sql`
+                SELECT * FROM "Songs"
+                ${whereClause}
+                ${orderBy}
+                LIMIT 5
+            `;
+
+            const res = await this.prisma.$queryRaw<PrismaSongs[]> (sql);
+
+            return res
+        }
+
+        let songs = startId
+            ? await fetchSongs(Prisma.sql`"Songs"."id" > ${startId}`)
+            : await fetchSongs();
+
+        if (songs.length === 0 && startId) {
+            songs = await fetchSongs();
+        }
+
+        return songs.map(PrismaSongMapper.toDomain)
+    }
+
+    async getFromLiked({ getSongOptions }: { getSongOptions: GetSongsOptions; }): Promise<Song[]> {
+        const { startId, excludedIds = [], random = false } = getSongOptions;
+
+        const baseConditions: Prisma.Sql[] = [Prisma.sql`liked = true`];
+
+        const fetchSongs = async (extraCondition?: Prisma.Sql) => {
+            const conditions = [...baseConditions];
+
+            if (extraCondition) {
+                conditions.push(extraCondition);
+            }
+
+            if (excludedIds.length > 0) {
+                conditions.push(Prisma.sql`id NOT IN (${Prisma.join(excludedIds)})`);
+            }
+
+            const whereClause = conditions.length
+            ? Prisma.sql`WHERE ${Prisma.join(conditions, ` AND `)}`
+            : Prisma.sql``;
+
+            const orderBy = random === Random.TRUE ? Prisma.sql`ORDER BY RANDOM()` : Prisma.sql`ORDER BY id ASC`;
+            
+            const sql = Prisma.sql`
+                SELECT * FROM "Songs"
+                ${whereClause}
+                ${orderBy}
+                LIMIT 5
+            `;
+
+            const res = await this.prisma.$queryRaw<PrismaSongs[]> (sql);
+
+            return res
+        }
+
+        let songs = startId
+            ? await fetchSongs(Prisma.sql`"Songs"."id" > ${startId}`)
+            : await fetchSongs();
+
+        if (songs.length === 0 && startId) {
+            songs = await fetchSongs();
+        }
+
+        return songs.map(PrismaSongMapper.toDomain)
+    }
+
+    async getFromPlaylist({ playlistId, getSongOptions }: { playlistId: string; getSongOptions: GetSongsOptions; }): Promise<Song[]> {
+        const { startId, excludedIds = [], random = false } = getSongOptions;
+
+        const baseConditions: Prisma.Sql[] = [
+            Prisma.sql`"PlaylistSongs"."playlistId" = ${playlistId}`,
+        ];
+
+        const fetchSongs = async (extraCondition?: Prisma.Sql) => {
+            const conditions = [...baseConditions];
+
+            if (extraCondition) {
+                conditions.push(extraCondition);
+            }
+
+            if (excludedIds.length > 0) {
+                conditions.push(Prisma.sql`id NOT IN (${Prisma.join(excludedIds)})`);
+            }
+
+            const whereClause = conditions.length
+            ? Prisma.sql`WHERE ${Prisma.join(conditions, ` AND `)}`
+            : Prisma.sql``;
+
+            const orderBy = random === Random.TRUE ? Prisma.sql`ORDER BY RANDOM()` : Prisma.sql`ORDER BY id ASC`;
+            
+            const sql = Prisma.sql`
+                SELECT "Songs".* FROM "Songs"
+                INNER JOIN "PlaylistSongs" ON "PlaylistSongs"."songId" = "Songs"."id"
+                ${whereClause}
+                ${orderBy}
+                LIMIT 5
+            `;
+
+            const res = await this.prisma.$queryRaw<PrismaSongs[]> (sql);
+
+            return res
+        }
+
+        let songs = startId
+            ? await fetchSongs(Prisma.sql`"Songs"."id" > ${startId}`)
+            : await fetchSongs();
+
+        if (songs.length === 0 && startId) {
+            songs = await fetchSongs();
+        }
+
+        return songs.map(PrismaSongMapper.toDomain)
     }
 }
