@@ -1,0 +1,17 @@
+crud(playlist, songs playlistSongs, history) - done
+
+download song - done
+
+filters for the queries - done
+
+fetch next songs - done
+
+integration with youtube api to fetch your playlist - not started
+
+download multiple songs at once - not started
+
+download playlist - not started
+
+maybe:
+
+integration with other music services (spotify, apple music, etc.) - not started
