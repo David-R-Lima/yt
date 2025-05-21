@@ -8,7 +8,7 @@ export class PrismaHistoryMapper {
         return {
             id: history.id,
             songId: history.songId,
-            createAt: history.createdAt,
+            createdAt: history.createdAt,
             updatedAt: history.updatedAt
         }
     }
@@ -19,7 +19,7 @@ export class PrismaHistoryMapper {
         const history = new History().create({
             id: raw.id,
             songId: raw.songId,
-            createdAt: raw.createAt ? new Date(raw.createAt) : undefined,
+            createdAt: raw.createdAt ? new Date(raw.createdAt) : undefined,
             updatedAt: raw.updatedAt ? new Date(raw.updatedAt) : undefined,
             song: raw.song ? PrismaSongMapper.toDomain(raw.song) : undefined
         })

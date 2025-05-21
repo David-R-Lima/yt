@@ -12,6 +12,7 @@ export class PrismaPlaylistMapper {
       name: playlist.name,
       description: playlist.description,
       imgUrl: playlist.imgUrl,
+      pinned: playlist.pinned,
       updatedAt: playlist.updatedAt,
     }
   }
@@ -26,6 +27,7 @@ export class PrismaPlaylistMapper {
       playlistSongs: raw.PlaylistSongs ? raw.PlaylistSongs.map(PrismaPlaylistSongMapper.toDomain) : [],
       name: raw.name ?? null,
       description: raw.description ?? null,
+      pinned: raw.pinned ?? null,
       imgUrl: raw.imgUrl ?? null,
       createdAt: raw.createdAt ?? null,
       updatedAt: raw.updatedAt ?? null,

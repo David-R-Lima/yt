@@ -6,6 +6,7 @@ interface Props {
   playlistSongs?: PlaylistSong[]
   name?: string | null
   description?: string | null
+  pinned?: boolean | null
   imgUrl?: string | null
   createdAt?: Date | null
   updatedAt?: Date | null
@@ -15,6 +16,7 @@ export class Playlist {
   private _id?: string | null
   private _name?: string | null
   private _imgUrl?: string | null
+  private _pinned?: boolean | null
   private _playlistSongs?: PlaylistSong[]
   private _description?: string | null
   private _createdAt?: Date | null
@@ -61,6 +63,14 @@ export class Playlist {
     this._description = value
   }
 
+  get pinned() {
+    return this._pinned
+  }
+
+  set pinned(value: boolean | undefined | null) {
+    this._pinned = value
+  }
+
   get createdAt() {
     return this._createdAt
   }
@@ -83,6 +93,7 @@ export class Playlist {
     playlist.id = props.id ?? createId()
     playlist.name = props.name
     playlist.imgUrl = props.imgUrl
+    playlist.pinned = props.pinned
     playlist.playlistSongs = props.playlistSongs
     playlist.description = props.description
     playlist.createdAt = props.createdAt

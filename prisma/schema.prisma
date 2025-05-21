@@ -14,6 +14,7 @@ model Playlist {
   name          String?
   description   String?
   imgUrl        String?
+  pinned        Boolean?        @default(false)
   createdAt     DateTime?       @default(now())
   updatedAt     DateTime?       @updatedAt
   PlaylistSongs PlaylistSongs[]
@@ -21,7 +22,7 @@ model Playlist {
 
 model Songs {
   id            String          @id @default(cuid())
-  liked         Boolean? @default(false)
+  liked         Boolean?        @default(false)
   title         String?
   artist        String?
   duration      Int?
@@ -47,7 +48,7 @@ model History {
   id     String @id @default(cuid())
   songId String
 
-  createAt  DateTime? @default(now())
+  createdAt  DateTime? @default(now())
   updatedAt DateTime? @updatedAt
 
   song Songs @relation(fields: [songId], references: [id])
