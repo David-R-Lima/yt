@@ -23,6 +23,8 @@ import { ClearHistory } from 'src/domain/usecases/history/clear-history'
 import { GetHistory } from 'src/domain/usecases/history/get-history'
 import { GetNextSongs } from 'src/domain/usecases/songs/get-next-songs'
 import { GetNextSongsController } from './controllers/songs/get-next-songs.controller'
+import { LikeSongUseCase } from 'src/domain/usecases/songs/add-song-to-liked'
+import { LikeSongController } from './controllers/songs/like-song.controller'
 
 @Module({
   imports: [DatabaseModule],
@@ -39,7 +41,8 @@ import { GetNextSongsController } from './controllers/songs/get-next-songs.contr
     AddSongToHistory,
     ClearHistory,
     GetHistory,
-    GetNextSongs
+    GetNextSongs,
+    LikeSongUseCase
   ],
   controllers: [
     DownloadSongController,
@@ -51,7 +54,8 @@ import { GetNextSongsController } from './controllers/songs/get-next-songs.contr
     AddSongToHistoryController,
     ClearHistoryController,
     GetHistoryController,
-    GetNextSongsController
+    GetNextSongsController,
+    LikeSongController
   ],
 })
 export class HttpModule {}
