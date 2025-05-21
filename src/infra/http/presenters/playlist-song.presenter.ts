@@ -7,8 +7,12 @@ export class PlaylistSongPresenter {
     return {
       song_id: playlistSong.songId,
       playlist_id: playlistSong.playlistId,
-      song: playlistSong.song ? SongPresenter.toHttp(playlistSong.song) : undefined,
-      playlist: playlistSong.playlist ? PlaylistPresenter.toHttp(playlistSong.playlist) : undefined,
+      ...(playlistSong.song && {
+        song: playlistSong.song ? SongPresenter.toHttp(playlistSong.song) : undefined
+      }),
+      ...(playlistSong.playlist && {
+        playlist: playlistSong.playlist ? PlaylistPresenter.toHttp(playlistSong.playlist) : undefined
+      })
     }
   }
 }

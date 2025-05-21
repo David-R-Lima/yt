@@ -23,7 +23,7 @@ export class RemoveSongToPlaylist {
       return null
     }
 
-    const playlistExists = await this.iPlaylistRespository.get(req.playlistId)
+    const playlistExists = await this.iPlaylistRespository.getById(req.playlistId)
 
     if (!playlistExists) {
       return null

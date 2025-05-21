@@ -8,9 +8,9 @@ export class PlaylistPresenter {
       name: playlist.name,
       description: playlist.description,
       img_url: playlist.imgUrl,
-      playlist_songs: playlist.playlistSongs
-        ? playlist.playlistSongs.map(PlaylistSongPresenter.toHttp)
-        : undefined,
+      ...(playlist.playlistSongs && playlist.playlistSongs.length > 0 && {
+        playlist_songs: playlist.playlistSongs.map(PlaylistSongPresenter.toHttp)
+      }),
       created_at: playlist.createdAt,
       updated_at: playlist.updatedAt,
     }

@@ -8,7 +8,9 @@ export class HistoryPresenter {
             song_id: history.songId,
             created_at: history.createdAt,
             updated_at: history.updatedAt,
-            song: history.song ? SongPresenter.toHttp(history.song) : null
+            ...(history.song && {
+                song: history.song ? SongPresenter.toHttp(history.song) : null
+            })
         }
     }
 }

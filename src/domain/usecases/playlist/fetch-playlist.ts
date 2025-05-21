@@ -1,19 +1,35 @@
 import { Injectable } from '@nestjs/common'
-import { IPagination } from 'src/core/pagination'
+import { IPagination, IPaginationResponse } from 'src/core/pagination'
 import { Playlist } from 'src/domain/entities/playlist'
+import { PlaylistSong } from 'src/domain/entities/playlist-song'
 import { IPlaylistRepository } from 'src/domain/repositories/i-playlist-repository'
+import { GetAllSongsFilters } from 'src/domain/repositories/i-song-repository'
 
 interface request {
   id: string
+  pagination: IPagination,
+  filters?: GetAllSongsFilters
 }
 
 @Injectable()
 export class FetchPlaylist {
   constructor(private readonly iPlaylistRespository: IPlaylistRepository) {}
 
-  async execute(req: request): Promise<Playlist> {
-    const res = await this.iPlaylistRespository.get(req.id)
+  async execute(req: request): Promise<{
+    playlist: Playlist,
+    songs: {
+      playlistSongs: PlaylistSong[],
+      paginationResponse: IPaginationResponse
+    }
+  }> {
+    const res = await this.iPlaylistRespository.getByIdWithSongs(req.id, req.pagination, req.filters)
 
-    return res
+    return {
+      playlist: res.playlist,
+      songs: {
+        playlistSongs: res.songs.playlistSongs,
+        paginationResponse: res.songs.paginationsReponse
+      }
+    }
   }
 }
