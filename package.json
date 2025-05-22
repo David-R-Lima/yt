@@ -17,7 +17,10 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "build:pkg:linux": "pnpm build && pkg . --targets node18-linux-x64 --out-path ./bin/linux",
+    "build:pkg:macos": "pnpm build && pkg . --targets node18-macos-x64 --out-path ./bin/macos",
+    "build:pkg:win": "pnpm build && pkg . --targets node18-win-x64 --out-path ./bin/win"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -75,5 +78,12 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "bin": "dist/main.js",
+  "pkg": {
+    "scripts": "dist/**/*.js",
+    "assets": [
+      "dist/**/*.json"
+    ]
   }
 }

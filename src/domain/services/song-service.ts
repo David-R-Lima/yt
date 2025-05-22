@@ -17,7 +17,7 @@ interface DownloadResponse {
 
 @Injectable()
 export class SongService {
-  downloadFolder = path.resolve(__dirname, '../../../downloaded-songs')
+  downloadFolder = path.resolve(process.cwd(), 'downloaded-songs')
 
   constructor() {
     if (!fs.existsSync(this.downloadFolder)) {

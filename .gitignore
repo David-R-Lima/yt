@@ -4,6 +4,10 @@
 /build
 generated
 /downloaded-songs
+/bin/linux/nest-yt
+/bin/macos/nest-yt
+.bin
+.exe
 
 # Logs
 logs
