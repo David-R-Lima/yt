@@ -10,4 +10,4 @@ set +o allexport
 #yt-dlp is required for this to work
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-"$DIR/nest-yt"
+"$DIR/api"

@@ -10,6 +10,14 @@ import { join } from 'path'
       rootPath: join(__dirname, '..', 'downloaded-songs'),
       serveRoot: '/downloaded-songs',
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'bin', 'linux'),
+      serveRoot: '/build/linux',
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'bin', 'win'),
+      serveRoot: '/build/win',
+    }),
   ],
   controllers: [],
   providers: [],

@@ -18,9 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "build:pkg:linux": "pnpm build && pkg . --targets node18-linux-x64 --out-path ./bin/linux",
-    "build:pkg:macos": "pnpm build && pkg . --targets node18-macos-x64 --out-path ./bin/macos",
-    "build:pkg:win": "pnpm build && pkg . --targets node18-win-x64 --out-path ./bin/win"
+    "build:linux": "pnpm build && pkg . --targets node18-linux-x64 --output ./bin/linux/api",
+    "build:macos": "pnpm build && pkg . --targets node18-macos-x64 --output ./bin/macos/api",
+    "build:win": "pnpm build && pkg . --targets node18-win-x64 --output ./bin/win/api.exe"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
