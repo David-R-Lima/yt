@@ -25,6 +25,7 @@ import { GetNextSongs } from 'src/domain/usecases/songs/get-next-songs'
 import { GetNextSongsController } from './controllers/songs/get-next-songs.controller'
 import { LikeSongUseCase } from 'src/domain/usecases/songs/add-song-to-liked'
 import { LikeSongController } from './controllers/songs/like-song.controller'
+import { FetchBuildController } from './controllers/build/fetch-build.controller'
 
 @Module({
   imports: [DatabaseModule],
@@ -55,7 +56,10 @@ import { LikeSongController } from './controllers/songs/like-song.controller'
     ClearHistoryController,
     GetHistoryController,
     GetNextSongsController,
-    LikeSongController
+    LikeSongController,
+
+    // build
+    FetchBuildController
   ],
 })
 export class HttpModule {}
