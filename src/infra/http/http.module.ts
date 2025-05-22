@@ -23,8 +23,8 @@ import { ClearHistory } from 'src/domain/usecases/history/clear-history'
 import { GetHistory } from 'src/domain/usecases/history/get-history'
 import { GetNextSongs } from 'src/domain/usecases/songs/get-next-songs'
 import { GetNextSongsController } from './controllers/songs/get-next-songs.controller'
-import { LikeSongUseCase } from 'src/domain/usecases/songs/add-song-to-liked'
-import { LikeSongController } from './controllers/songs/like-song.controller'
+import { UpdateSongUseCase } from 'src/domain/usecases/songs/add-song-to-liked'
+import { UpdateSongController } from './controllers/songs/update-song.controller'
 import { FetchBuildController } from './controllers/build/fetch-build.controller'
 
 @Module({
@@ -43,7 +43,7 @@ import { FetchBuildController } from './controllers/build/fetch-build.controller
     ClearHistory,
     GetHistory,
     GetNextSongs,
-    LikeSongUseCase
+    UpdateSongUseCase
   ],
   controllers: [
     DownloadSongController,
@@ -56,7 +56,7 @@ import { FetchBuildController } from './controllers/build/fetch-build.controller
     ClearHistoryController,
     GetHistoryController,
     GetNextSongsController,
-    LikeSongController,
+    UpdateSongController,
 
     // build
     FetchBuildController

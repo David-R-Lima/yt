@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common'
 import { HttpModule } from './infra/http/http.module'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
-import { AuthModule } from './infra/auth/auth.module'
+// import { AuthModule } from './infra/auth/auth.module'
 
 @Module({
   imports: [
-    AuthModule,
+    // AuthModule,
     HttpModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'downloaded-songs'),
