@@ -6,8 +6,7 @@ generated
 /downloaded-songs
 /bin/linux/nest-yt
 /bin/macos/nest-yt
-.bin
-.exe
+/bin/win/nest-yt.exe
 
 # Logs
 logs
