@@ -1,17 +1,18 @@
 import { Body, Controller, Delete } from '@nestjs/common'
+import { HardDelete } from 'src/core/hardDelete';
 import { DeleteSong } from 'src/domain/usecases/songs/delete-song'
 
-@Controller('/download')
+@Controller('/song')
 export class DeleteSongController {
   constructor(private readonly deleteSong: DeleteSong) {}
 
   @Delete()
-  async handle(@Body() body: { songId: string; hardDelete?: boolean }): Promise<void> {
-    const { songId, hardDelete } = body
+  async handle(@Body() body: { song_id: string; hard_delete?: HardDelete }): Promise<void> {
+    const { song_id, hard_delete } = body
     try {
       await this.deleteSong.execute({
-        songId,
-        hardDelete,
+        songId: song_id,
+        hardDelete: hard_delete === HardDelete.TRUE ? true : false,
       })
     } catch (error) {
       console.error(error)

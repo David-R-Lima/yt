@@ -24,7 +24,15 @@ export class PrismaSongRepository implements ISongRepository {
     }
 
     async delete(id: string): Promise<void> {
-
+        if(!id) {
+            return
+        }
+        
+        await this.prisma.songs.delete({
+            where: {
+                id
+            }
+        })
     }
 
     async get(id: string): Promise<Song> {

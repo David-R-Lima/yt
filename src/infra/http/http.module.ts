@@ -6,7 +6,7 @@ import { GetSongsUseCase } from 'src/domain/usecases/songs/get-songs'
 import { GetSongsController } from './controllers/songs/get-songs.controller'
 import { AddSongToPlaylist } from 'src/domain/usecases/playlist/add-song-to-playlist'
 import { FetchPlaylists } from 'src/domain/usecases/playlist/fetch-playlists'
-import { RemoveSongToPlaylist } from 'src/domain/usecases/playlist/remove-song-from-playlist'
+import { RemoveSongFromPlaylist } from 'src/domain/usecases/playlist/remove-song-from-playlist'
 import { DeleteSong } from 'src/domain/usecases/songs/delete-song'
 import { CreatePlaylistController } from './controllers/playlist/create-playlist.controller'
 import { FetchPlaylistsController } from './controllers/playlist/fetch-playlists.controller'
@@ -26,6 +26,8 @@ import { GetNextSongsController } from './controllers/songs/get-next-songs.contr
 import { UpdateSongUseCase } from 'src/domain/usecases/songs/add-song-to-liked'
 import { UpdateSongController } from './controllers/songs/update-song.controller'
 import { FetchBuildController } from './controllers/build/fetch-build.controller'
+import { RemoveSongToPlaylistController } from './controllers/playlist/remove-song-from-playlist.controller'
+import { DeleteSongController } from './controllers/songs/delete-song.controller'
 
 @Module({
   imports: [DatabaseModule],
@@ -35,7 +37,7 @@ import { FetchBuildController } from './controllers/build/fetch-build.controller
     GetSongsUseCase,
     AddSongToPlaylist,
     FetchPlaylists,
-    RemoveSongToPlaylist,
+    RemoveSongFromPlaylist,
     DeleteSong,
     CreatePlayListUseCase,
     FetchPlaylist,
@@ -57,6 +59,8 @@ import { FetchBuildController } from './controllers/build/fetch-build.controller
     GetHistoryController,
     GetNextSongsController,
     UpdateSongController,
+    RemoveSongToPlaylistController,
+    DeleteSongController,
 
     // build
     FetchBuildController

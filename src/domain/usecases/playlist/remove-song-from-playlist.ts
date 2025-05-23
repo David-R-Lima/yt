@@ -9,7 +9,7 @@ interface request {
 }
 
 @Injectable()
-export class RemoveSongToPlaylist {
+export class RemoveSongFromPlaylist {
   constructor(
     private readonly iSongRepository: ISongRepository,
     private readonly iPlaylistRespository: IPlaylistRepository,
