@@ -28,6 +28,7 @@ import { UpdateSongController } from './controllers/songs/update-song.controller
 import { FetchBuildController } from './controllers/build/fetch-build.controller'
 import { RemoveSongToPlaylistController } from './controllers/playlist/remove-song-from-playlist.controller'
 import { DeleteSongController } from './controllers/songs/delete-song.controller'
+import { HealthController } from './controllers/health/health.controller'
 
 @Module({
   imports: [DatabaseModule],
@@ -48,6 +49,7 @@ import { DeleteSongController } from './controllers/songs/delete-song.controller
     UpdateSongUseCase
   ],
   controllers: [
+    HealthController,
     DownloadSongController,
     GetSongsController,
     CreatePlaylistController,
