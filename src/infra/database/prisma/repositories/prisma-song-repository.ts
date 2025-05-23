@@ -122,7 +122,7 @@ export class PrismaSongRepository implements ISongRepository {
     }
 
     async getFromAll({ getSongOptions }: { getSongOptions: GetSongsOptions; }): Promise<Song[]> {
-        const { startId, excludedIds = [], random = false, reverse = false } = getSongOptions;
+        const { startId, excludedIds = [], random = false, reverse } = getSongOptions;
 
         const baseConditions: Prisma.Sql[] = [];
 
@@ -161,29 +161,13 @@ export class PrismaSongRepository implements ISongRepository {
             return res
         }
 
-        let songs: PrismaSongs[]
-
-        if(startId && reverse === Reverse.TRUE) {
-            songs =  await fetchSongs([Prisma.sql`"Songs"."id" < ${startId}`])
-
-            if(songs.length === 0) {
-                songs =  (await fetchSongs([Prisma.sql`"Songs"."id" > ${startId}`], Reverse.TRUE)).reverse()
-            }
-        } else if(startId && reverse === Reverse.FALSE) {
-            songs = await fetchSongs([Prisma.sql`"Songs"."id" > ${startId}`])
-
-            if (songs.length === 0) {
-                songs = await fetchSongs();
-            }
-        } else {
-            songs = await fetchSongs()
-        }
+        const songs = await getPaginatedSongs(fetchSongs, startId, reverse);
 
         return songs.map(PrismaSongMapper.toDomain)
     }
 
     async getFromLiked({ getSongOptions }: { getSongOptions: GetSongsOptions; }): Promise<Song[]> {
-        const { startId, excludedIds = [], random = false, reverse = false } = getSongOptions;
+        const { startId, excludedIds = [], random = false, reverse } = getSongOptions;
 
         const baseConditions: Prisma.Sql[] = [Prisma.sql`liked = true`];
 
@@ -223,29 +207,13 @@ export class PrismaSongRepository implements ISongRepository {
             return res
         }
 
-        let songs: PrismaSongs[]
-
-        if(startId && reverse === Reverse.TRUE) {
-            songs =  await fetchSongs([Prisma.sql`"Songs"."id" < ${startId}`])
-
-            if(songs.length === 0) {
-                songs =  (await fetchSongs([Prisma.sql`"Songs"."id" > ${startId}`], Reverse.TRUE)).reverse()
-            }
-        } else if(startId && reverse === Reverse.FALSE) {
-            songs = await fetchSongs([Prisma.sql`"Songs"."id" > ${startId}`])
-
-            if (songs.length === 0) {
-                songs = await fetchSongs();
-            }
-        } else {
-            songs = await fetchSongs()
-        }
+        const songs = await getPaginatedSongs(fetchSongs, startId, reverse);
 
         return songs.map(PrismaSongMapper.toDomain)
     }
 
     async getFromPlaylist({ playlistId, getSongOptions }: { playlistId: string; getSongOptions: GetSongsOptions; }): Promise<Song[]> {
-        const { startId, excludedIds = [], random = false, reverse = false } = getSongOptions;
+        const { startId, excludedIds = [], random = false, reverse } = getSongOptions;
 
         const baseConditions: Prisma.Sql[] = [
             Prisma.sql`"PlaylistSongs"."playlistId" = ${playlistId}`,
@@ -287,24 +255,34 @@ export class PrismaSongRepository implements ISongRepository {
             return res
         }
 
-        let songs: PrismaSongs[]
-
-        if(startId && reverse === Reverse.TRUE) {
-            songs =  await fetchSongs([Prisma.sql`"Songs"."id" < ${startId}`])
-
-            if(songs.length === 0) {
-                songs =  (await fetchSongs([Prisma.sql`"Songs"."id" > ${startId}`], Reverse.TRUE)).reverse()
-            }
-        } else if(startId && reverse === Reverse.FALSE) {
-            songs = await fetchSongs([Prisma.sql`"Songs"."id" > ${startId}`])
-
-            if (songs.length === 0) {
-                songs = await fetchSongs();
-            }
-        } else {
-            songs = await fetchSongs()
-        }
+        const songs = await getPaginatedSongs(fetchSongs, startId, reverse);
 
         return songs.map(PrismaSongMapper.toDomain)
     }
+}
+
+async function getPaginatedSongs(
+    fetchSongs: (conditions?: Prisma.Sql[], reverse?: Reverse) => Promise<PrismaSongs[]>,
+    startId?: string,
+    reverse?: Reverse
+): Promise<PrismaSongs[]> {
+    let songs: PrismaSongs[];
+
+    if (startId && reverse === Reverse.TRUE) {
+        songs = (await fetchSongs([Prisma.sql`"Songs"."id" < ${startId}`], Reverse.TRUE)).reverse();
+
+        if (songs.length === 0) {
+            songs = (await fetchSongs([Prisma.sql`"Songs"."id" > ${startId}`], Reverse.TRUE)).reverse();
+        }
+    } else if (startId && (reverse === Reverse.FALSE || !reverse)) {
+        songs = await fetchSongs([Prisma.sql`"Songs"."id" > ${startId}`]);
+
+        if (songs.length === 0) {
+            songs = await fetchSongs();
+        }
+    } else {
+        songs = await fetchSongs();
+    }
+
+    return songs;
 }

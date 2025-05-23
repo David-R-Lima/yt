@@ -26,7 +26,7 @@ export class GetNextSongs{
 
     async execute(req: request): Promise<Song[]> {
 
-        const { source = Source.all, sourceId, random = Random.FALSE, excludedIds, startId, reverse = Reverse.FALSE } = req;
+        const { source = Source.all, sourceId, random = Random.FALSE, excludedIds, startId, reverse } = req;
         
         switch (source) {
             case Source.all: {

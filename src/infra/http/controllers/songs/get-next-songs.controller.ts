@@ -11,7 +11,7 @@ const requestSchema =  z.object({
     source: z.nativeEnum(Source).optional().default(Source.all),
     source_id: z.string().optional(),
     start_id: z.string().optional(),
-    reverse: z.nativeEnum(Reverse).optional().default(Reverse.FALSE),
+    reverse: z.nativeEnum(Reverse).optional(),
 });
 
 type RequestSchema = z.infer<typeof requestSchema>;
