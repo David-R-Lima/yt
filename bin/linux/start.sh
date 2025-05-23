@@ -5,8 +5,8 @@
 # Debug print to verify env vars (optional)
 echo "DATABASE_URL = $DATABASE_URL"
 echo "DIRECT_URL = $DIRECT_URL"
-echo "API_URL = $VITE_API_URL"
-echo "PORT = $VITE_API_PORT"
+echo "VITE_API_URL = $VITE_API_URL"
+echo "PORT = $PORT"
 
 # Path to api executable (assuming api binary is in same folder)
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -15,9 +15,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 "$DIR/api" > /dev/null 2>&1 &
 
 # Wait until API responds with a 2xx or 3xx HTTP status
-echo "Waiting for API at $API_URL ..."
+echo "Waiting for API at $VITE_API_URL ..."
 
-until curl --output /dev/null --silent --head --fail "${API_URL}/health"; do
+until curl --output /dev/null --silent --head --fail "${VITE_API_URL}/health"; do
     sleep 0.5
 done
 
