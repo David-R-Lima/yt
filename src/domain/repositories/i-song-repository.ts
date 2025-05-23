@@ -27,6 +27,7 @@ export abstract class ISongRepository {
     abstract update(id: string, song: Song): Promise<void>;
     abstract delete(id: string): Promise<void>;
     abstract get(id: string): Promise<Song>;
+    abstract getByYoutubeUrl(url: string): Promise<Song | null>;
     abstract getAll(paganiation: IPagination, filters?: GetAllSongsFilters): Promise<{
         songs: Song[],
         paginationsReponse: IPaginationResponse

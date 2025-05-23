@@ -43,7 +43,9 @@ export class DeleteSong {
   
         await this.songService.delete(filename)
   
-        songExists.localUrl = undefined
+        songExists.localUrl = null
+
+        await this.iSongRepository.update(req.songId, songExists)
       }
     }
   }

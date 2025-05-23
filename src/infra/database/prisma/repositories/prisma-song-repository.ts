@@ -27,7 +27,7 @@ export class PrismaSongRepository implements ISongRepository {
         if(!id) {
             return
         }
-        
+
         await this.prisma.songs.delete({
             where: {
                 id
@@ -43,6 +43,18 @@ export class PrismaSongRepository implements ISongRepository {
         if(!raw) throw new Error("Not found");
 
         return PrismaSongMapper.toDomain(raw);
+    }
+
+    async getByYoutubeUrl(url: string): Promise<Song | null> {
+        const raw = await this.prisma.songs.findFirst({
+            where: {
+                youtubeUrl: url,
+            },
+        });
+
+        if(!raw) return null;
+        
+        return PrismaSongMapper.toDomain(raw) 
     }
 
     async getAll(paganiation: IPagination, filters?: GetAllSongsFilters): Promise<{

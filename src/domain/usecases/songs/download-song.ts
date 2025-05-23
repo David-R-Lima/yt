@@ -24,18 +24,28 @@ export class DownloadSongUseCase {
       return res
     }
 
-    const song = new Song().create({
-      title: res.title,
-      youtubeUrl: url,
-      localUrl: res.fileUrl,
-      artist: res.artist,
-      duration: res.duration,
-      imgUrl: res.thumbnail,
-      createdAt: new Date(),
-    })
+    const songExists = await this.songRepository.getByYoutubeUrl(url)
 
-    const newSong = await this.songRepository.create(song)
+    if(songExists) {
+      songExists.localUrl = res.fileUrl
 
-    return newSong
+      await this.songRepository.update(songExists.id as string, songExists)
+
+      return songExists
+    } else {
+      const song = new Song().create({
+        title: res.title,
+        youtubeUrl: url,
+        localUrl: res.fileUrl,
+        artist: res.artist,
+        duration: res.duration,
+        imgUrl: res.thumbnail,
+        createdAt: new Date(),
+      })
+  
+      const newSong = await this.songRepository.create(song)
+  
+      return newSong
+    }
   }
 }
