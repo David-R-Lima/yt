@@ -3,6 +3,7 @@ import { Song } from "../entities/songs";
 import { OrderBy } from "src/core/order-by";
 import { Liked } from "src/core/liked";
 import { Random } from "src/core/random";
+import { Reverse } from "src/core/reverse";
 
 export interface GetAllSongsFilters {
     text?: string
@@ -18,6 +19,7 @@ export interface GetSongsOptions {
     excludedIds?: string[];
     random?: Random;
     startId?: string
+    reverse?: Reverse
 }
 
 export abstract class ISongRepository {

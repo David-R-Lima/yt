@@ -7,6 +7,7 @@ import { PrismaSongMapper } from "../mappers/prisma-song-mapper";
 import { Liked } from "src/core/liked";
 import { Prisma, Songs as PrismaSongs } from "generated/prisma";
 import { Random } from "src/core/random";
+import { Reverse } from "src/core/reverse";
 
 @Injectable()
 export class PrismaSongRepository implements ISongRepository {
@@ -121,16 +122,14 @@ export class PrismaSongRepository implements ISongRepository {
     }
 
     async getFromAll({ getSongOptions }: { getSongOptions: GetSongsOptions; }): Promise<Song[]> {
-        const { startId, excludedIds = [], random = false } = getSongOptions;
+        const { startId, excludedIds = [], random = false, reverse = false } = getSongOptions;
 
         const baseConditions: Prisma.Sql[] = [];
 
-        const fetchSongs = async (extraCondition?: Prisma.Sql) => {
+        const fetchSongs = async (extraCondition?: Prisma.Sql[], backwards?: Reverse) => {
             const conditions = [...baseConditions];
 
-            if (extraCondition) {
-                conditions.push(extraCondition);
-            }
+            extraCondition?.forEach((condition) => conditions.push(condition))
 
             if (excludedIds.length > 0) {
                 conditions.push(Prisma.sql`id NOT IN (${Prisma.join(excludedIds)})`);
@@ -140,7 +139,15 @@ export class PrismaSongRepository implements ISongRepository {
             ? Prisma.sql`WHERE ${Prisma.join(conditions, ` AND `)}`
             : Prisma.sql``;
 
-            const orderBy = random === Random.TRUE ? Prisma.sql`ORDER BY RANDOM()` : Prisma.sql`ORDER BY id ASC`;
+            let orderBy: Prisma.Sql;
+
+            if (random === Random.TRUE) {
+                orderBy = Prisma.sql`ORDER BY RANDOM()`;
+            } else if (backwards === Reverse.TRUE) {
+                orderBy = Prisma.sql`ORDER BY "id" DESC`;
+            } else {
+                orderBy = Prisma.sql`ORDER BY "id" ASC`;
+            }
             
             const sql = Prisma.sql`
                 SELECT * FROM "Songs"
@@ -154,28 +161,36 @@ export class PrismaSongRepository implements ISongRepository {
             return res
         }
 
-        let songs = startId
-            ? await fetchSongs(Prisma.sql`"Songs"."id" > ${startId}`)
-            : await fetchSongs();
+        let songs: PrismaSongs[]
 
-        if (songs.length === 0 && startId) {
-            songs = await fetchSongs();
+        if(startId && reverse === Reverse.TRUE) {
+            songs =  await fetchSongs([Prisma.sql`"Songs"."id" < ${startId}`])
+
+            if(songs.length === 0) {
+                songs =  (await fetchSongs([Prisma.sql`"Songs"."id" > ${startId}`], Reverse.TRUE)).reverse()
+            }
+        } else if(startId && reverse === Reverse.FALSE) {
+            songs = await fetchSongs([Prisma.sql`"Songs"."id" > ${startId}`])
+
+            if (songs.length === 0) {
+                songs = await fetchSongs();
+            }
+        } else {
+            songs = await fetchSongs()
         }
 
         return songs.map(PrismaSongMapper.toDomain)
     }
 
     async getFromLiked({ getSongOptions }: { getSongOptions: GetSongsOptions; }): Promise<Song[]> {
-        const { startId, excludedIds = [], random = false } = getSongOptions;
+        const { startId, excludedIds = [], random = false, reverse = false } = getSongOptions;
 
         const baseConditions: Prisma.Sql[] = [Prisma.sql`liked = true`];
 
-        const fetchSongs = async (extraCondition?: Prisma.Sql) => {
+        const fetchSongs = async (extraCondition?: Prisma.Sql[], backwards?: Reverse) => {
             const conditions = [...baseConditions];
 
-            if (extraCondition) {
-                conditions.push(extraCondition);
-            }
+            extraCondition?.forEach((condition) => conditions.push(condition));
 
             if (excludedIds.length > 0) {
                 conditions.push(Prisma.sql`id NOT IN (${Prisma.join(excludedIds)})`);
@@ -185,7 +200,16 @@ export class PrismaSongRepository implements ISongRepository {
             ? Prisma.sql`WHERE ${Prisma.join(conditions, ` AND `)}`
             : Prisma.sql``;
 
-            const orderBy = random === Random.TRUE ? Prisma.sql`ORDER BY RANDOM()` : Prisma.sql`ORDER BY id ASC`;
+            let orderBy: Prisma.Sql;
+
+            if (random === Random.TRUE) {
+                orderBy = Prisma.sql`ORDER BY RANDOM()`;
+            } else if (backwards === Reverse.TRUE) {
+                orderBy = Prisma.sql`ORDER BY "id" DESC`;
+            } else {
+                orderBy = Prisma.sql`ORDER BY "id" ASC`;
+            }
+            
             
             const sql = Prisma.sql`
                 SELECT * FROM "Songs"
@@ -199,30 +223,38 @@ export class PrismaSongRepository implements ISongRepository {
             return res
         }
 
-        let songs = startId
-            ? await fetchSongs(Prisma.sql`"Songs"."id" > ${startId}`)
-            : await fetchSongs();
+        let songs: PrismaSongs[]
 
-        if (songs.length === 0 && startId) {
-            songs = await fetchSongs();
+        if(startId && reverse === Reverse.TRUE) {
+            songs =  await fetchSongs([Prisma.sql`"Songs"."id" < ${startId}`])
+
+            if(songs.length === 0) {
+                songs =  (await fetchSongs([Prisma.sql`"Songs"."id" > ${startId}`], Reverse.TRUE)).reverse()
+            }
+        } else if(startId && reverse === Reverse.FALSE) {
+            songs = await fetchSongs([Prisma.sql`"Songs"."id" > ${startId}`])
+
+            if (songs.length === 0) {
+                songs = await fetchSongs();
+            }
+        } else {
+            songs = await fetchSongs()
         }
 
         return songs.map(PrismaSongMapper.toDomain)
     }
 
     async getFromPlaylist({ playlistId, getSongOptions }: { playlistId: string; getSongOptions: GetSongsOptions; }): Promise<Song[]> {
-        const { startId, excludedIds = [], random = false } = getSongOptions;
+        const { startId, excludedIds = [], random = false, reverse = false } = getSongOptions;
 
         const baseConditions: Prisma.Sql[] = [
             Prisma.sql`"PlaylistSongs"."playlistId" = ${playlistId}`,
         ];
 
-        const fetchSongs = async (extraCondition?: Prisma.Sql) => {
+        const fetchSongs = async (extraCondition?: Prisma.Sql[], backwards?: Reverse) => {
             const conditions = [...baseConditions];
 
-            if (extraCondition) {
-                conditions.push(extraCondition);
-            }
+            extraCondition?.forEach((condition) => conditions.push(condition));
 
             if (excludedIds.length > 0) {
                 conditions.push(Prisma.sql`id NOT IN (${Prisma.join(excludedIds)})`);
@@ -232,7 +264,15 @@ export class PrismaSongRepository implements ISongRepository {
             ? Prisma.sql`WHERE ${Prisma.join(conditions, ` AND `)}`
             : Prisma.sql``;
 
-            const orderBy = random === Random.TRUE ? Prisma.sql`ORDER BY RANDOM()` : Prisma.sql`ORDER BY id ASC`;
+            let orderBy: Prisma.Sql;
+
+            if (random === Random.TRUE) {
+                orderBy = Prisma.sql`ORDER BY RANDOM()`;
+            } else if (backwards === Reverse.TRUE) {
+                orderBy = Prisma.sql`ORDER BY "id" DESC`;
+            } else {
+                orderBy = Prisma.sql`ORDER BY "id" ASC`;
+            }
             
             const sql = Prisma.sql`
                 SELECT "Songs".* FROM "Songs"
@@ -247,12 +287,22 @@ export class PrismaSongRepository implements ISongRepository {
             return res
         }
 
-        let songs = startId
-            ? await fetchSongs(Prisma.sql`"Songs"."id" > ${startId}`)
-            : await fetchSongs();
+        let songs: PrismaSongs[]
 
-        if (songs.length === 0 && startId) {
-            songs = await fetchSongs();
+        if(startId && reverse === Reverse.TRUE) {
+            songs =  await fetchSongs([Prisma.sql`"Songs"."id" < ${startId}`])
+
+            if(songs.length === 0) {
+                songs =  (await fetchSongs([Prisma.sql`"Songs"."id" > ${startId}`], Reverse.TRUE)).reverse()
+            }
+        } else if(startId && reverse === Reverse.FALSE) {
+            songs = await fetchSongs([Prisma.sql`"Songs"."id" > ${startId}`])
+
+            if (songs.length === 0) {
+                songs = await fetchSongs();
+            }
+        } else {
+            songs = await fetchSongs()
         }
 
         return songs.map(PrismaSongMapper.toDomain)

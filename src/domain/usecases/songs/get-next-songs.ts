@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { IPaginationResponse } from "src/core/pagination";
 import { Random } from "src/core/random";
+import { Reverse } from "src/core/reverse";
 import { Song } from "src/domain/entities/songs";
 import { ISongRepository } from "src/domain/repositories/i-song-repository";
 
@@ -16,6 +17,7 @@ interface request {
     sourceId?: string;
     random?: Random;
     excludedIds?: string[];
+    reverse?: Reverse
 }
 
 @Injectable()
@@ -24,7 +26,7 @@ export class GetNextSongs{
 
     async execute(req: request): Promise<Song[]> {
 
-        const { source = Source.all, sourceId, random = Random.FALSE, excludedIds, startId } = req;
+        const { source = Source.all, sourceId, random = Random.FALSE, excludedIds, startId, reverse = Reverse.FALSE } = req;
         
         switch (source) {
             case Source.all: {
@@ -32,7 +34,8 @@ export class GetNextSongs{
                     getSongOptions: {
                         random,
                         startId,
-                        excludedIds
+                        excludedIds,
+                        reverse
                     }
                 })
 
@@ -47,7 +50,8 @@ export class GetNextSongs{
                     getSongOptions: {
                         random,
                         startId,
-                        excludedIds
+                        excludedIds,
+                        reverse
                     }
                 })
 
@@ -59,7 +63,8 @@ export class GetNextSongs{
                     getSongOptions: {
                         random,
                         startId,
-                        excludedIds
+                        excludedIds,
+                        reverse
                     }
                 })
 
@@ -71,7 +76,8 @@ export class GetNextSongs{
                     getSongOptions: {
                         random,
                         startId,
-                        excludedIds
+                        excludedIds,
+                        reverse
                     }
                 })
 
