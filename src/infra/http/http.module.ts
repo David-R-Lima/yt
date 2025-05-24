@@ -29,6 +29,12 @@ import { FetchBuildController } from './controllers/build/fetch-build.controller
 import { RemoveSongToPlaylistController } from './controllers/playlist/remove-song-from-playlist.controller'
 import { DeleteSongController } from './controllers/songs/delete-song.controller'
 import { HealthController } from './controllers/health/health.controller'
+import { FetchYoutubeSongsController } from './controllers/youtube/fetch-youtube-songs.controller'
+import { YoutubeService } from 'src/domain/services/youtube-service'
+import { FetchMyYoutubeSongsController } from './controllers/youtube/fetch-my-playlist.controller'
+import { MyYoutubeService } from 'src/domain/services/my-playlist-service'
+import { YoutubeCallback } from './controllers/youtube/youtube-oauth-callback.controller'
+import { GoogleAuthService } from 'src/domain/services/google-auth-service'
 
 @Module({
   imports: [DatabaseModule],
@@ -46,7 +52,11 @@ import { HealthController } from './controllers/health/health.controller'
     ClearHistory,
     GetHistory,
     GetNextSongs,
-    UpdateSongUseCase
+    UpdateSongUseCase,
+    //youtube
+    MyYoutubeService,
+    YoutubeService,
+    GoogleAuthService,
   ],
   controllers: [
     HealthController,
@@ -64,8 +74,12 @@ import { HealthController } from './controllers/health/health.controller'
     RemoveSongToPlaylistController,
     DeleteSongController,
 
+    // youtube
+    FetchYoutubeSongsController,
+    FetchMyYoutubeSongsController,
+    YoutubeCallback,
     // build
-    FetchBuildController
+    FetchBuildController,
   ],
 })
 export class HttpModule {}

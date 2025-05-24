@@ -54,3 +54,10 @@ model History {
 
   song Songs @relation(fields: [songId], references: [id], onDelete: Cascade)
 }
+
+model Youtube {
+  id String @id @default(cuid())
+  accessToken String?
+  refreshToken String?
+  expirationDate DateTime?
+}
