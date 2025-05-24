@@ -29,6 +29,8 @@ export class PrismaYoutubeRepository implements IYoutubeRepository {
   async update(youtube: Youtube): Promise<Youtube> {
     const data = PrismaYoutubeMapper.toPrisma(youtube)
 
+    console.log(data)
+
     const res = await this.prismaService.youtube.update({
       where: {
         id: data.id ?? '',

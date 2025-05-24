@@ -35,9 +35,10 @@ import { FetchMyYoutubeSongsController } from './controllers/youtube/fetch-my-pl
 import { MyYoutubeService } from 'src/domain/services/my-playlist-service'
 import { YoutubeCallback } from './controllers/youtube/youtube-oauth-callback.controller'
 import { GoogleAuthService } from 'src/domain/services/google-auth-service'
+import { CacheModule } from '@nestjs/cache-manager'
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, CacheModule.register()],
   providers: [
     SongService,
     DownloadSongUseCase,

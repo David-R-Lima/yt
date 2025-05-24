@@ -3,7 +3,6 @@ import { IYoutubeRepository } from '../repositories/i-youtube-repository'
 import { Youtube } from '../entities/youtube'
 
 interface Request {
-  query: string
   pageToken?: string
 }
 
@@ -55,25 +54,34 @@ export interface YouTubeThumbnail {
 export class MyYoutubeService {
   constructor(private readonly youtubeRepository: IYoutubeRepository) {}
 
-  async execute({ query, pageToken }: Request): Promise<YouTubeSearchResponse> {
+  async execute({ pageToken }: Request): Promise<YouTubeSearchResponse> {
     const res = await this.ensureValidToken()
+    if (!res) throw new InternalServerErrorException(`no youtube entity`)
 
-    if (!res) {
-      throw new InternalServerErrorException(`no youtube entity`)
-    }
+    // Fetch the liked playlist ID dynamically
+    // const playlistRes = await fetch(
+    //   'https://www.googleapis.com/youtube/v3/channels?part00=contentDetails&mine=true',
+    //   {
+    //     headers: {
+    //       Authorization: `Bearer ${res.accessToken}`,
+    //     },
+    //   }
+    // )
 
-    const playlistId = 'LL' // 'LL' is the playlist ID for "Liked Videos"
+    // if (!playlistRes.ok) {
+    //   const errorText = await playlistRes.text()
+    //   throw new InternalServerErrorException(
+    //     `YouTube channels API error: ${playlistRes.status} ${errorText}`
+    //   )
+    // }
+
+    // const playlistData = await playlistRes.json()
+    // const playlistId = playlistData.items[0].contentDetails.relatedPlaylists.likes
 
     const url = new URL('https://www.googleapis.com/youtube/v3/playlistItems')
     url.searchParams.set('part', 'snippet')
     url.searchParams.set('maxResults', '50')
-    url.searchParams.set('playlistId', playlistId)
-
-    if (pageToken) {
-      url.searchParams.set('pageToken', pageToken)
-    }
-
-    console.log(url)
+    url.searchParams.set('playlistId', "LL")
 
     if (pageToken) {
       url.searchParams.set('pageToken', pageToken)
@@ -98,12 +106,9 @@ export class MyYoutubeService {
     const filteredItems = data.items.filter((item) => {
       const title = item.snippet.title.toLowerCase()
       const description = item.snippet.description.toLowerCase()
-
       const text = `${title} ${description}`
-
       const matchesInclude = includeKeywords.some((keyword) => text.includes(keyword))
       const matchesExclude = excludeKeywords.some((keyword) => text.includes(keyword))
-
       return matchesInclude && !matchesExclude
     })
 
@@ -141,8 +146,8 @@ export class MyYoutubeService {
     const url = 'https://oauth2.googleapis.com/token'
 
     const params = new URLSearchParams()
-    params.append('client_id', process.env.YT_CLIENT_ID!)
-    params.append('client_secret', process.env.YT_CLIENT_SECRET!)
+    params.append('client_id', process.env.GOOGLE_CLIENT_ID!)
+    params.append('client_secret', process.env.GOOGLE_CLIENT_SECRET!)
     params.append('refresh_token', youtube.refreshToken!)
     params.append('grant_type', 'refresh_token')
 

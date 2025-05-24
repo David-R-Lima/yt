@@ -4,6 +4,7 @@ import { Youtube } from 'src/domain/entities/youtube'
 export class PrismaYoutubeMapper {
   static toPrisma(youtube: Youtube): Prisma.YoutubeUncheckedCreateInput {
     return {
+      id: youtube.id ?? undefined,
       accessToken: youtube.accessToken ?? '',
       refreshToken: youtube.refreshToken ?? '',
       expirationDate: youtube.expiryDate ? new Date(youtube.expiryDate) : undefined,
