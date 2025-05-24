@@ -36,6 +36,8 @@ import { MyYoutubeService } from 'src/domain/services/my-playlist-service'
 import { YoutubeCallback } from './controllers/youtube/youtube-oauth-callback.controller'
 import { GoogleAuthService } from 'src/domain/services/google-auth-service'
 import { CacheModule } from '@nestjs/cache-manager'
+import { GetQuickSelect } from 'src/domain/usecases/history/quick-select'
+import { GetQuickSelectController } from './controllers/history/get-quick-select.controller'
 
 @Module({
   imports: [DatabaseModule, CacheModule.register()],
@@ -54,6 +56,7 @@ import { CacheModule } from '@nestjs/cache-manager'
     GetHistory,
     GetNextSongs,
     UpdateSongUseCase,
+    GetQuickSelect,
     //youtube
     MyYoutubeService,
     YoutubeService,
@@ -74,6 +77,7 @@ import { CacheModule } from '@nestjs/cache-manager'
     UpdateSongController,
     RemoveSongToPlaylistController,
     DeleteSongController,
+    GetQuickSelectController,
 
     // youtube
     FetchYoutubeSongsController,

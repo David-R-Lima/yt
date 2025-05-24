@@ -1,33 +1,29 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common'
 import { IYoutubeRepository } from '../repositories/i-youtube-repository'
 import { Youtube } from '../entities/youtube'
+import { SongService } from './song-service'
 
 interface Request {
   pageToken?: string
 }
 
-export interface YouTubeSearchResponse {
+export interface YouTubeLikedPlaylistResponse {
   kind: string
   etag: string
   nextPageToken?: string
   prevPageToken?: string
-  regionCode: string
   pageInfo: {
     totalResults: number
     resultsPerPage: number
   }
-  items: YouTubeSearchItem[]
+  items: YouTubeLikedPlayistItem[]
 }
 
-export interface YouTubeSearchItem {
+export interface YouTubeLikedPlayistItem {
   kind: string
   etag: string
-  id: {
-    kind: 'youtube#video' | 'youtube#channel' | 'youtube#playlist'
-    videoId?: string
-    channelId?: string
-    playlistId?: string
-  }
+  id: string
+  downloaded: boolean
   snippet: {
     publishedAt: string
     channelId: string
@@ -41,6 +37,12 @@ export interface YouTubeSearchItem {
     channelTitle: string
     liveBroadcastContent: 'none' | 'live' | 'upcoming'
     publishTime: string
+    playlistId: string
+    position: number
+    resourceId: {
+      kind: string
+      videoId: string
+    }
   }
 }
 
@@ -52,36 +54,19 @@ export interface YouTubeThumbnail {
 
 @Injectable()
 export class MyYoutubeService {
-  constructor(private readonly youtubeRepository: IYoutubeRepository) {}
+  constructor(
+    private readonly youtubeRepository: IYoutubeRepository,
+    private readonly songService: SongService
+  ) {}
 
-  async execute({ pageToken }: Request): Promise<YouTubeSearchResponse> {
+  async execute({ pageToken }: Request): Promise<YouTubeLikedPlaylistResponse> {
     const res = await this.ensureValidToken()
     if (!res) throw new InternalServerErrorException(`no youtube entity`)
-
-    // Fetch the liked playlist ID dynamically
-    // const playlistRes = await fetch(
-    //   'https://www.googleapis.com/youtube/v3/channels?part00=contentDetails&mine=true',
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${res.accessToken}`,
-    //     },
-    //   }
-    // )
-
-    // if (!playlistRes.ok) {
-    //   const errorText = await playlistRes.text()
-    //   throw new InternalServerErrorException(
-    //     `YouTube channels API error: ${playlistRes.status} ${errorText}`
-    //   )
-    // }
-
-    // const playlistData = await playlistRes.json()
-    // const playlistId = playlistData.items[0].contentDetails.relatedPlaylists.likes
 
     const url = new URL('https://www.googleapis.com/youtube/v3/playlistItems')
     url.searchParams.set('part', 'snippet')
     url.searchParams.set('maxResults', '50')
-    url.searchParams.set('playlistId', "LL")
+    url.searchParams.set('playlistId', 'LL')
 
     if (pageToken) {
       url.searchParams.set('pageToken', pageToken)
@@ -98,18 +83,32 @@ export class MyYoutubeService {
       throw new InternalServerErrorException(`YouTube API error: ${response.status} ${errorText}`)
     }
 
-    const data: YouTubeSearchResponse = await response.json()
+    const data: YouTubeLikedPlaylistResponse = await response.json()
 
-    const includeKeywords = ['mv', 'song', 'audio', 'sv', 'synthv']
-    const excludeKeywords = ['mmd', 'clip', 'shorts']
+    const includeKeywords = ['mv', 'song', 'audio', 'sv', 'synthv', 'vocaloid']
+    const excludeKeywords = ['mmd', 'clip', 'shorts', 'fanart', 'hollow knight', 'daniel thrasher']
 
-    const filteredItems = data.items.filter((item) => {
+    let filteredItems: YouTubeLikedPlayistItem[] = []
+
+    data.items.filter((item) => {
       const title = item.snippet.title.toLowerCase()
       const description = item.snippet.description.toLowerCase()
       const text = `${title} ${description}`
       const matchesInclude = includeKeywords.some((keyword) => text.includes(keyword))
       const matchesExclude = excludeKeywords.some((keyword) => text.includes(keyword))
-      return matchesInclude && !matchesExclude
+
+      if (matchesInclude && !matchesExclude) {
+        const downloaded = this.songService.isDownloaded(item.snippet.title)
+
+        if (downloaded) {
+          item.downloaded = true
+        } else {
+          item.downloaded = false
+          filteredItems.push(item)
+        }
+      }
+
+      return matchesInclude && !matchesExclude && item.downloaded
     })
 
     return {

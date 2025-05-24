@@ -129,4 +129,44 @@ export class PrismaHistoryRepository implements IHistoryRepository {
 
     return PrismaHistoryMapper.toDomain(result)
   }
+
+  async getQuickSelect(): Promise<History[]> {
+    let oneWeekAgo = new Date()
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
+
+    const topSongs = await this.prisma.history.groupBy({
+      by: ['songId'],
+      where: {
+        createdAt: {
+          gte: oneWeekAgo,
+        },
+      },
+      _count: {
+        songId: true,
+      },
+      orderBy: {
+        _count: {
+          songId: 'desc',
+        },
+      },
+      take: 10, // adjust how many top songs you want
+    })
+
+    const histories = await this.prisma.history.findMany({
+      where: {
+        songId: {
+          in: topSongs.map((song) => song.songId),
+        },
+      },
+      distinct: ['songId'], // optional: only one per songId
+      orderBy: {
+        createdAt: 'desc', // most recent listen per song
+      },
+      include: {
+        song: true, // if you have a Song relation and want details
+      },
+    })
+
+    return histories.map(PrismaHistoryMapper.toDomain)
+  }
 }

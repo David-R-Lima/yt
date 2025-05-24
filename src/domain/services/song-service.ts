@@ -50,7 +50,7 @@ export class SongService {
     const outputPath = path.join(this.downloadFolder, finalFileName)
     const outputTemplate = path.join(this.downloadFolder, `${sanitizedTitle}.%(ext)s`)
 
-    if (this.isDownloaded(outputPath)) {
+    if (this.isDownloaded(sanitizedTitle)) {
       return new Error(`File already exists at ${outputPath}`)
     }
 
@@ -76,11 +76,12 @@ export class SongService {
   }
 
   async delete(title: string) {
-    const filePath = path.join(this.downloadFolder, title)
-    const fileExists = this.isDownloaded(filePath)
+    const sanitizedTitle = this.sanitizeFileName(title)
+    const filePath = path.join(this.downloadFolder, `${sanitizedTitle}.mp3`)
 
-    if (!fileExists) {
+    if (!this.isDownloaded(sanitizedTitle)) {
       console.log('File not found!')
+      return
     }
 
     fs.rm(filePath, () => {
@@ -88,7 +89,9 @@ export class SongService {
     })
   }
 
-  isDownloaded(url: string): boolean {
-    return fs.existsSync(url)
+  isDownloaded(title: string): boolean {
+    const sanitizedTitle = this.sanitizeFileName(title)
+    const filePath = path.join(this.downloadFolder, `${sanitizedTitle}.mp3`)
+    return fs.existsSync(filePath)
   }
 }

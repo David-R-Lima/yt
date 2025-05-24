@@ -21,6 +21,7 @@ export interface YouTubeSearchResponse {
 export interface YouTubeSearchItem {
   kind: string
   etag: string
+  downloaded: boolean
   id: {
     kind: 'youtube#video' | 'youtube#channel' | 'youtube#playlist'
     videoId?: string
