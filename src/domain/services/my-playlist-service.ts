@@ -85,30 +85,19 @@ export class MyYoutubeService {
 
     const data: YouTubeLikedPlaylistResponse = await response.json()
 
-    const includeKeywords = ['mv', 'song', 'audio', 'sv', 'synthv', 'vocaloid']
-    const excludeKeywords = ['mmd', 'clip', 'shorts', 'fanart', 'hollow knight', 'daniel thrasher']
-
     let filteredItems: YouTubeLikedPlayistItem[] = []
 
     data.items.filter((item) => {
-      const title = item.snippet.title.toLowerCase()
-      const description = item.snippet.description.toLowerCase()
-      const text = `${title} ${description}`
-      const matchesInclude = includeKeywords.some((keyword) => text.includes(keyword))
-      const matchesExclude = excludeKeywords.some((keyword) => text.includes(keyword))
+      const downloaded = this.songService.isDownloaded(item.snippet.title)
 
-      if (matchesInclude && !matchesExclude) {
-        const downloaded = this.songService.isDownloaded(item.snippet.title)
-
-        if (downloaded) {
-          item.downloaded = true
-        } else {
-          item.downloaded = false
-          filteredItems.push(item)
-        }
+      if (downloaded) {
+        item.downloaded = true
+      } else {
+        item.downloaded = false
+        filteredItems.push(item)
       }
 
-      return matchesInclude && !matchesExclude && item.downloaded
+      return !item.downloaded
     })
 
     return {

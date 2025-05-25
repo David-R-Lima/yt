@@ -28,7 +28,7 @@ export class FetchMyYoutubeSongsController {
       pageToken: page,
     })
 
-    await this.cacheManager.set(key, res)
+    await this.cacheManager.set(key, res, 1000 * 60 * 5)
 
     return res
   }
