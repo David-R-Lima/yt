@@ -22,7 +22,6 @@ type RequestSchema = z.infer<typeof requestSchema>;
 
 const validationPipe = new ZodValidationPipe(requestSchema);
 
-
 @Controller('/song')
 export class GetSongsController {
   constructor(private readonly getSongUseCase: GetSongsUseCase) {}

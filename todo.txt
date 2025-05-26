@@ -6,7 +6,7 @@ filters for the queries - done
 
 fetch next songs - done
 
-integration with youtube api to fetch your playlist - not started
+integration with youtube api to fetch your playlist - done
 
 download multiple songs at once - not started
 
