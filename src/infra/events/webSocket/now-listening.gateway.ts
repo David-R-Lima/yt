@@ -37,4 +37,8 @@ export class NowListeningGateway implements OnGatewayConnection, OnGatewayDiscon
     emitPrevious() {
         this.server.emit('previous');
     }
+
+    emitUpdate() {
+        this.server.emit('update');
+    }
 }
