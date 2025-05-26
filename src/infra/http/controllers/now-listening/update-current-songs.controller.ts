@@ -6,7 +6,7 @@ import { NowListeningGateway } from "src/infra/events/webSocket/now-listening.ga
 
 const requestSchema = z.object({
     song_id: z.string(),
-    current_time: z.number().optional(), // optional because we don't know the current time of the user when they are listening to a song, so we can't set it to the current time of the user
+    current_time: z.number().optional(),
 });
 
 type RequestSchema = z.infer<typeof requestSchema>
