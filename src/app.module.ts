@@ -12,6 +12,10 @@ const exeDir = process.cwd()
     ServeStaticModule.forRoot({
       rootPath: join(exeDir, 'downloaded-songs'),
       serveRoot: '/downloaded-songs',
+      serveStaticOptions: {
+        immutable: true,
+        maxAge: "1d"
+      }
     }),
   ],
   controllers: [],
