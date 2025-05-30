@@ -1,0 +1,36 @@
+services:
+  tailscale-authkey1:
+    image: tailscale/tailscale:latest
+    container_name: ts-authkey-test
+    hostname: banana
+    environment:
+      - TS_AUTHKEY=token
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    volumes:
+      - ts-authkey-test:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "tailscale", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    expose:
+      - "3333"
+
+  yt-api:
+    container_name: my-node-app
+    build: .
+    env_file:
+      - .env
+    network_mode: service:tailscale-authkey1
+    depends_on:
+      tailscale-authkey1:
+        condition: service_healthy
+volumes:
+  ts-authkey-test:
+    driver: local
