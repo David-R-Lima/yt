@@ -1,4 +1,5 @@
-FROM node:18-alpine AS base
+# Use official Node.js LTS base image
+FROM node:22-slim as base
 
 # Install ffmpeg and yt-dlp
 RUN apt-get update && apt-get install -y \
