@@ -1,6 +1,8 @@
 # Use official Node.js LTS base image
 FROM node:22-slim
 
+ENV SHELL=/bin/sh
+
 # Set working directory
 WORKDIR /usr/src/app
 
