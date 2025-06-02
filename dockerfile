@@ -1,10 +1,4 @@
-# Use official Node.js LTS base image
-FROM node:22-slim
-
-ENV SHELL=/bin/sh
-
-# Set working directory
-WORKDIR /usr/src/app
+FROM node:18-alpine AS base
 
 # Install ffmpeg and yt-dlp
 RUN apt-get update && apt-get install -y \
@@ -15,24 +9,26 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install pnpm
-RUN npm install -g pnpm
+RUN npm i -g pnpm
 
-RUN pnpm setup
+FROM base AS dependencies
 
-RUN pnpm add -g @nestjs/cli
-
-# Copy only package manager files first for better layer caching
+WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
+RUN pnpm install
 
-# Install production dependencies
-RUN pnpm install --frozen-lockfile --prod
+FROM base AS build
 
-# Copy the rest of the app
+WORKDIR /app
 COPY . .
-
-# Build the app (ensure tsconfig/build script exists if needed)
+COPY --from=dependencies /app/node_modules ./node_modules
 RUN pnpm build
+RUN pnpm prune --prod
 
-# Run the compiled output
+FROM base AS deploy
+
+WORKDIR /app
+COPY --from=build /app/dist/ ./dist/
+COPY --from=build /app/node_modules ./node_modules
+
 CMD [ "node", "dist/main.js" ]
