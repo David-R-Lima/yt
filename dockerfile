@@ -16,6 +16,8 @@ RUN apt-get update && apt-get install -y \
 # Install pnpm
 RUN npm install -g pnpm
 
+RUN pnpm setup
+
 RUN pnpm add -g @nestjs/cli
 
 # Copy only package manager files first for better layer caching
