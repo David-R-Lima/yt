@@ -17,6 +17,7 @@ FROM base AS dependencies
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install
+RUN pnpm prisma generate
 
 FROM base AS build
 
