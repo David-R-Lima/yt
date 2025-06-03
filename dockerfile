@@ -1,5 +1,8 @@
 # Use official Node.js LTS base image
-FROM node:22-slim AS base
+FROM node:22-slim
+
+# Set working directory
+WORKDIR /usr/src/app
 
 # Install ffmpeg and yt-dlp
 RUN apt-get update && apt-get install -y \
@@ -10,41 +13,20 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN npm i -g pnpm
+# Install pnpm
+RUN npm install -g pnpm
 
-# Install dependencies and generate Prisma client
-FROM base AS dependencies
+# Copy only package manager files first for better layer caching
+COPY package.json pnpm-lock.yaml ./
 
-WORKDIR /app
+# Install production dependencies
+RUN pnpm install --frozen-lockfile --prod
 
-COPY package.json pnpm-lock.yaml ./               # copy package files
-COPY prisma ./prisma                               # copy prisma folder
-
-RUN pnpm install
-RUN pnpm prisma generate
-
-# Build the app
-FROM base AS build
-
-WORKDIR /app
-
+# Copy the rest of the app
 COPY . .
-COPY --from=dependencies /app/node_modules ./node_modules
-COPY --from=dependencies /app/generated ./generated
 
+# Build the app (ensure tsconfig/build script exists if needed)
 RUN pnpm build
-RUN pnpm prune --prod
 
-# Copy generated Prisma client to dist for runtime
-RUN mkdir -p dist/generated
-RUN cp -r generated/prisma dist/generated/prisma
-
-# Final deploy image
-FROM base AS deploy
-
-WORKDIR /app
-
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/node_modules ./node_modules
-
+# Run the compiled output
 CMD [ "node", "dist/main.js" ]
