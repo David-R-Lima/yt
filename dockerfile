@@ -13,8 +13,8 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install pnpm
-RUN npm install -g pnpm
+# Install pnpm and nest
+RUN npm install -g pnpm @nestjs/cli
 
 # Copy only package manager files first for better layer caching
 COPY package.json pnpm-lock.yaml ./
