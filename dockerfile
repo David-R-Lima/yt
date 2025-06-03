@@ -4,14 +4,22 @@ FROM node:22-slim
 # Set working directory
 WORKDIR /usr/src/app
 
-# Install ffmpeg and yt-dlp
+# Install ffmpeg, yt-dlp, and locales
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     curl \
-    && curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp \
-    && chmod a+rx /usr/local/bin/yt-dlp \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    locales \
+ && curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp \
+ && chmod a+rx /usr/local/bin/yt-dlp \
+ && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
+ && locale-gen \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+# Set environment variables for locale
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
 
 # Install pnpm and nest
 RUN npm install -g pnpm @nestjs/cli
