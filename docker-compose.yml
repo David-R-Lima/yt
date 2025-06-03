@@ -1,5 +1,5 @@
 services:
-  yt-api-image:
+  api-image:
     container_name: yt-api
     build: .
     env_file:
