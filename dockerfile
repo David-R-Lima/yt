@@ -33,6 +33,8 @@ RUN pnpm install --frozen-lockfile --prod
 # Copy the rest of the app
 COPY . .
 
+RUN mkdir -p /downloaded-songs && chmod 777 /downloaded-songs
+
 # Build the app (ensure tsconfig/build script exists if needed)
 RUN pnpm build
 
