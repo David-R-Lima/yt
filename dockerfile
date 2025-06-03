@@ -24,8 +24,11 @@ RUN pnpm prisma generate
 FROM base AS build
 
 WORKDIR /app
+
 COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=dependencies /app/generated ./generated
+
 RUN pnpm build
 RUN pnpm prune --prod
 
