@@ -48,6 +48,7 @@ import { PlayCurrentSongController } from './controllers/now-listening/actions/p
 import { SkipCurrentSongController } from './controllers/now-listening/actions/skip-current-song.controller'
 import { PauseCurrentSongController } from './controllers/now-listening/actions/pause-current-song.controller'
 import { PreviousCurrentSongController } from './controllers/now-listening/actions/previous-current-song.controller'
+import { DownloadedSongsController } from './controllers/songs/fetch-song.controller'
 
 @Module({
   imports: [DatabaseModule, CacheModule.register(), EventsModule],
@@ -95,6 +96,7 @@ import { PreviousCurrentSongController } from './controllers/now-listening/actio
     RemoveSongToPlaylistController,
     DeleteSongController,
     GetQuickSelectController,
+    DownloadedSongsController,
 
     // now listening
     GetCurrentSongController,

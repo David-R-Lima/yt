@@ -6,18 +6,7 @@ import { AuthModule } from './infra/auth/auth.module'
 
 const exeDir = process.cwd()
 @Module({
-  imports: [
-    AuthModule,
-    HttpModule,
-    ServeStaticModule.forRoot({
-      rootPath: join(exeDir, 'downloaded-songs'),
-      serveRoot: '/downloaded-songs',
-      serveStaticOptions: {
-        immutable: true,
-        maxAge: "1d"
-      }
-    }),
-  ],
+  imports: [AuthModule, HttpModule],
   controllers: [],
   providers: [],
 })
