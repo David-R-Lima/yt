@@ -25,7 +25,7 @@ ENV LANG=en_US.UTF-8 \
 RUN npm install -g pnpm @nestjs/cli
 
 # Copy only package manager files first for better layer caching
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Install production dependencies
 RUN pnpm install --frozen-lockfile
