@@ -32,16 +32,29 @@ export class GoogleAuthService {
   async getTokens(code: string): Promise<Youtube> {
     const { tokens } = await this.oauth2Client.getToken(code)
 
+    const existingYoutube = await this.youtubeRepository.get()
+
     this.oauth2Client.setCredentials(tokens)
 
-    const youtube = new Youtube().create({
-      accessToken: tokens.access_token ?? '',
-      refreshToken: tokens.refresh_token ?? '',
-      expiryDate: tokens.expiry_date ? new Date(tokens.expiry_date) : undefined,
-    })
+    if (existingYoutube) {
+      existingYoutube.accessToken = tokens.access_token ?? undefined
+      existingYoutube.refreshToken = tokens.refresh_token ?? undefined
+      existingYoutube.expiryDate = tokens.expiry_date ? new Date(tokens.expiry_date) : undefined
 
-    await this.youtubeRepository.create(youtube)
-    return youtube
+      await this.youtubeRepository.update(existingYoutube)
+
+      return existingYoutube
+    } else {
+      const youtube = new Youtube().create({
+        accessToken: tokens.access_token ?? '',
+        refreshToken: tokens.refresh_token ?? '',
+        expiryDate: tokens.expiry_date ? new Date(tokens.expiry_date) : undefined,
+      })
+
+      await this.youtubeRepository.create(youtube)
+
+      return youtube
+    }
   }
 
   async getAccessToken(): Promise<string> {
