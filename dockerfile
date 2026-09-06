@@ -28,7 +28,7 @@ RUN npm install -g pnpm @nestjs/cli
 COPY package.json pnpm-lock.yaml ./
 
 # Install production dependencies
-RUN pnpm install --frozen-lockfile --prod
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the app
 COPY . .
