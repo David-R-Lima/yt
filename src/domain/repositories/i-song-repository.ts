@@ -40,4 +40,5 @@ export abstract class ISongRepository {
     }): Promise<Song[]>
     abstract getFromLiked({ getSongOptions }: {getSongOptions: GetSongsOptions}): Promise<Song[]>
     abstract getFromAll({ getSongOptions }: {getSongOptions: GetSongsOptions}): Promise<Song[]>
+    abstract getRecommended(): Promise<Song[]>
 }

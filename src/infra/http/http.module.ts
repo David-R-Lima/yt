@@ -49,6 +49,8 @@ import { SkipCurrentSongController } from './controllers/now-listening/actions/s
 import { PauseCurrentSongController } from './controllers/now-listening/actions/pause-current-song.controller'
 import { PreviousCurrentSongController } from './controllers/now-listening/actions/previous-current-song.controller'
 import { DownloadedSongsController } from './controllers/songs/fetch-song.controller'
+import { GetRecommendedSongsController } from './controllers/history/fetch-recommended-songs.controller'
+import { GetRecommended } from 'src/domain/usecases/history/get-recommended'
 
 @Module({
   imports: [DatabaseModule, CacheModule.register(), EventsModule],
@@ -69,6 +71,7 @@ import { DownloadedSongsController } from './controllers/songs/fetch-song.contro
     GetNextSongs,
     UpdateSongUseCase,
     GetQuickSelect,
+    GetRecommended,
 
     //now listening
     GetCurrentSong,
@@ -97,6 +100,7 @@ import { DownloadedSongsController } from './controllers/songs/fetch-song.contro
     DeleteSongController,
     GetQuickSelectController,
     DownloadedSongsController,
+    GetRecommendedSongsController,
 
     // now listening
     GetCurrentSongController,

@@ -149,7 +149,7 @@ export class PrismaHistoryRepository implements IHistoryRepository {
           songId: 'desc',
         },
       },
-      take: 10, // adjust how many top songs you want
+      take: 20, // adjust how many top songs you want
     })
 
     const histories = await this.prisma.history.findMany({
