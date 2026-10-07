@@ -53,6 +53,8 @@ import { GetRecommendedSongsController } from './controllers/history/fetch-recom
 import { GetRecommended } from 'src/domain/usecases/history/get-recommended'
 import { GetSmartDownload } from 'src/domain/usecases/history/get-for-smart-download'
 import { GetSmartDownloadController } from './controllers/history/get-for-smart-download.controller'
+import { GetSongByIdController } from './controllers/songs/get-song-by-id.controller'
+import { GetSongByIdUseCase } from 'src/domain/usecases/songs/get-song-by-id'
 
 @Module({
   imports: [DatabaseModule, CacheModule.register(), EventsModule],
@@ -75,6 +77,7 @@ import { GetSmartDownloadController } from './controllers/history/get-for-smart-
     GetQuickSelect,
     GetRecommended,
     GetSmartDownload,
+    GetSongByIdUseCase,
 
     //now listening
     GetCurrentSong,
@@ -105,6 +108,7 @@ import { GetSmartDownloadController } from './controllers/history/get-for-smart-
     DownloadedSongsController,
     GetRecommendedSongsController,
     GetSmartDownloadController,
+    GetSongByIdController,
     // now listening
     GetCurrentSongController,
     UpdateCurrentSongsController,
