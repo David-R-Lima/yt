@@ -28,14 +28,12 @@ RUN npm install -g pnpm @nestjs/cli
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Install production dependencies
-RUN pnpm install --frozen-lockfile --dangerously-allow-all-builds
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the app
 COPY . .
 
 RUN pnpm prisma generate
-
-RUN mkdir -p /downloaded-songs && chmod 777 /downloaded-songs
 
 # Build the app (ensure tsconfig/build script exists if needed)
 RUN pnpm build

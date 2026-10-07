@@ -169,4 +169,34 @@ export class PrismaHistoryRepository implements IHistoryRepository {
 
     return histories.map(PrismaHistoryMapper.toDomain)
   }
+
+  async getForSmartDownload(
+    limit: number,
+  ): Promise<{ songIds: string[] }> {
+    const thirtyOneDaysAgo = new Date(
+      Date.now() - 31 * 24 * 60 * 60 * 1000,
+    )
+    
+    const history = await this.prisma.history.groupBy({
+      by: ['songId'],
+      where: {
+        createdAt: {
+          gte: thirtyOneDaysAgo,
+        },
+      },
+      _count: {
+        songId: true,
+      },
+      orderBy: {
+        _count: {
+          songId: 'desc',
+        },
+      },
+      take: limit,
+    })
+
+    return {
+      songIds: history.map((item) => item.songId),
+    }
+  }
 }

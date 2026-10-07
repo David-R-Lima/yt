@@ -23,4 +23,7 @@ export abstract class IHistoryRepository {
   abstract getFirst(): Promise<History | undefined>
   abstract update(history: History): Promise<History>
   abstract getQuickSelect(): Promise<History[]>
+  abstract getForSmartDownload(
+    limit: number,
+  ): Promise<{ songIds: string[] }>
 }
