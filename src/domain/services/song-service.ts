@@ -15,6 +15,8 @@ interface DownloadResponse {
   thumbnail?: string
 }
 
+const YT_DLP = "yt-dlp --js-runtimes node"
+
 @Injectable()
 export class SongService {
   downloadFolder = path.resolve(process.cwd(), 'downloaded-songs')
@@ -32,7 +34,7 @@ export class SongService {
   }
 
   async download(url: string): Promise<DownloadResponse | Error> {
-    const metadataCmd = `yt-dlp -j "${url}"`
+    const metadataCmd = `${YT_DLP} -j "${url}"`
 
     let metadata: any = {}
 
@@ -54,7 +56,7 @@ export class SongService {
       return new Error(`File already exists at ${outputPath}`)
     }
 
-    const command = `yt-dlp -x --audio-format mp3 --audio-quality 0 -o "${outputTemplate}" "${url}"`
+    const command = `${YT_DLP} -x --audio-format mp3 --audio-quality 0 -o "${outputTemplate}" "${url}"`
 
     try {
       const { stdout, stderr } = await execAsync(command)

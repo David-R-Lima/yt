@@ -41,4 +41,5 @@ export abstract class ISongRepository {
     abstract getFromLiked({ getSongOptions }: {getSongOptions: GetSongsOptions}): Promise<Song[]>
     abstract getFromAll({ getSongOptions }: {getSongOptions: GetSongsOptions}): Promise<Song[]>
     abstract getRecommended(): Promise<Song[]>
+    abstract getRandom(from: string): Promise<Song>
 }

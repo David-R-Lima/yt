@@ -352,6 +352,30 @@ export class PrismaSongRepository implements ISongRepository {
 
     return recommendedSongs.map(PrismaSongMapper.toDomain)
   }
+
+  async getRandom(from: string): Promise<Song> {
+    const where: Prisma.SongsWhereInput =
+      from === 'ALL'
+        ? {}
+        : from === 'LIKED'
+          ? { liked: true }
+          : { artist: from }
+
+    const count = await this.prisma.songs.count({ where })
+
+    if (count === 0) {
+      throw new Error('No songs found')
+    }
+
+    const raw = await this.prisma.songs.findFirst({
+      where,
+      skip: Math.floor(Math.random() * count),
+    })
+
+    if (!raw) throw new Error('Song not found')
+
+    return PrismaSongMapper.toDomain(raw)
+  }
 }
 
 async function getPaginatedSongs(

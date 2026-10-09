@@ -55,6 +55,8 @@ import { GetSmartDownload } from 'src/domain/usecases/history/get-for-smart-down
 import { GetSmartDownloadController } from './controllers/history/get-for-smart-download.controller'
 import { GetSongByIdController } from './controllers/songs/get-song-by-id.controller'
 import { GetSongByIdUseCase } from 'src/domain/usecases/songs/get-song-by-id'
+import { GetRandomSongUseCase } from 'src/domain/usecases/songs/get-random-song'
+import { GetRandomSongController } from './controllers/songs/get-random-song.controller'
 
 @Module({
   imports: [DatabaseModule, CacheModule.register(), EventsModule],
@@ -78,6 +80,7 @@ import { GetSongByIdUseCase } from 'src/domain/usecases/songs/get-song-by-id'
     GetRecommended,
     GetSmartDownload,
     GetSongByIdUseCase,
+    GetRandomSongUseCase,
 
     //now listening
     GetCurrentSong,
@@ -109,6 +112,7 @@ import { GetSongByIdUseCase } from 'src/domain/usecases/songs/get-song-by-id'
     GetRecommendedSongsController,
     GetSmartDownloadController,
     GetSongByIdController,
+    GetRandomSongController,
     // now listening
     GetCurrentSongController,
     UpdateCurrentSongsController,
